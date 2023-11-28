@@ -113,7 +113,7 @@ public class Chess extends JPanel {
         int r = 7 - mouseY * 8 / getHeight();
         int f = mouseX * 8 / getWidth();
 
-        return new Square(new Rank(r + 1), new File((char) (f + 'A')));
+        return new Square(new Rank(r + 1), new File((char) (f + 'a')));
     }
 
     @Override
@@ -156,7 +156,7 @@ public class Chess extends JPanel {
                     if (selected != null) {
                         Piece sel = current.getPiece(selected);
                         Rank rank = new Rank(r + 1);
-                        File file = new File((char) (f + 'A'));
+                        File file = new File((char) (f + 'a'));
 
                         if (sel != null) {
                             MoveLegality legality = current.getLegality(selected, new Square(rank, file));

@@ -13,7 +13,7 @@ public class Board {
     /**
      * A 2d array of pieces representing the chess board. Each entry is either a
      * Piece instance or null. The format is board[file][rank] where: files 0..=7
-     * correspond to 'A'..='H' and ranks 0..=7 correspond to 1..=8. Indices are
+     * correspond to 'a'..='h' and ranks 0..=7 correspond to 1..=8. Indices are
      * defined in the Rank and File classes.
      */
     private Piece[][] board;
@@ -101,7 +101,7 @@ public class Board {
     public Board withMove(Square from, Square to, MoveContext context) {
         Board next = new Board(InitialBoardState.Empty);
         for (int r = 1; r <= 8; r++) {
-            for (char f = 'A'; f <= 'H'; f++) {
+            for (char f = 'a'; f <= 'h'; f++) {
                 Square square = new Square(new Rank(r), new File(f));
                 if (square.equals(from)) {
                     next.setPiece(square, null);
@@ -117,6 +117,8 @@ public class Board {
             case White -> PieceColor.Black;
             case Black -> PieceColor.White;
         };
+
+        System.out.println(from.toString() + to.toString());
 
         return next;
     }
@@ -175,7 +177,7 @@ public class Board {
      */
     public Square getKingLocation(PieceColor color) {
         for (int r = 1; r <= 8; r++) {
-            for (char f = 'A'; f <= 'H'; f++) {
+            for (char f = 'a'; f <= 'h'; f++) {
                 Square s = new Square(new Rank(r), new File(f));
                 Piece p = getPiece(s);
                 if (p.getColor() == color && p.getClass() == King.class) {

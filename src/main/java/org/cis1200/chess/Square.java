@@ -43,4 +43,9 @@ public class Square {
             return this.rank.equals(((Square) o).rank) && this.file.equals(((Square) o).file);
         }
     }
+
+    @Override
+    public String toString() {
+        return file.toString() + rank.toString();
+    }
 }

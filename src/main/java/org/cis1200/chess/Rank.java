@@ -28,4 +28,9 @@ public class Rank {
             return this.index == ((Rank) o).index;
         }
     }
+
+    @Override
+    public String toString() {
+        return Integer.toString(index + 1);
+    }
 }
