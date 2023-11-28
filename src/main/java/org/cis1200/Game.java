@@ -2,7 +2,7 @@ package org.cis1200;
 
 import javax.swing.*;
 
-import org.cis1200.chess.RunChess;
+import org.cis1200.chess.ui.RunChess;
 
 public class Game {
     /**

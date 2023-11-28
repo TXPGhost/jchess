@@ -19,6 +19,11 @@ public class Board {
     private Piece[][] board;
 
     /**
+     * The move that was played to achieve this board state.
+     */
+    private Move lastMove;
+
+    /**
      * A piece color corresponding to the current player's turn
      */
     private PieceColor turn;
@@ -98,15 +103,15 @@ public class Board {
      * Returns a new board with the given piece moved to a new position. Does not
      * verify if the move is a legal move.
      */
-    public Board withMove(Square from, Square to, MoveContext context) {
+    public Board withMove(Move move) {
         Board next = new Board(InitialBoardState.Empty);
         for (int r = 1; r <= 8; r++) {
             for (char f = 'a'; f <= 'h'; f++) {
                 Square square = new Square(new Rank(r), new File(f));
-                if (square.equals(from)) {
+                if (square.equals(move.getFrom())) {
                     next.setPiece(square, null);
-                } else if (square.equals(to)) {
-                    next.setPiece(square, getPiece(from));
+                } else if (square.equals(move.getTo())) {
+                    next.setPiece(square, getPiece(move.getFrom()));
                 } else {
                     next.setPiece(square, getPiece(square));
                 }
@@ -118,39 +123,59 @@ public class Board {
             case Black -> PieceColor.White;
         };
 
-        System.out.println(from.toString() + to.toString());
+        next.lastMove = move;
 
         return next;
     }
 
     /**
-     * Returns a new board with the given piece moved to a new position. Assumes
-     * normal move context. That is, the move is not en passant, castling, or
-     * promotion. Does not verify if the move is a legal move.
+     * Returns the move that was played to achieve this board state.
      */
-    public Board withMove(Square from, Square to) {
-        return withMove(from, to, MoveContext.Normal);
+    public Move getLastMove() {
+        return lastMove;
+    }
+
+    /**
+     * Returns the legality of the given move, ignoring checks.
+     */
+    private MoveLegality getLegalityIgnoreCheck(Move move) {
+        Piece p = getPiece(move.getFrom());
+
+        // Make sure the piece we are trying to move exists
+        if (p == null) {
+            return MoveLegality.NoSuchPiece;
+        }
+
+        // Make sure it is the right player's turn
+        if (p.getColor() != turn) {
+            return MoveLegality.WrongTurn;
+        }
+
+        // Make srue we are not trying to capture our own piece
+        if (p.getColor() == getPieceColor(move.getTo())) {
+            return MoveLegality.SameSideCapture;
+        }
+
+        return p.getLegality(this, move);
     }
 
     /**
      * Returns the legality of the given move.
      */
-    public MoveLegality getLegality(Square from, Square to) {
-        Piece p = getPiece(from);
+    public MoveLegality getLegality(Move move) {
+        MoveLegality legality = getLegalityIgnoreCheck(move);
 
-        if (p == null) {
-            return MoveLegality.NoSuchPiece;
+        if (!legality.isLegal()) {
+            return legality;
         }
 
-        if (p.getColor() != turn) {
-            return MoveLegality.WrongTurn;
+        // Make sure the king would remain out of check
+        Board after = withMove(move);
+        if (after.isKingInCheck()) {
+            return MoveLegality.WouldBeInCheck;
         }
 
-        if (p.getColor() == getPieceColor(to)) {
-            return MoveLegality.SameSideCapture;
-        }
-
-        return p.getLegality(this, from, to);
+        return MoveLegality.Legal;
     }
 
     /**
@@ -180,11 +205,68 @@ public class Board {
             for (char f = 'a'; f <= 'h'; f++) {
                 Square s = new Square(new Rank(r), new File(f));
                 Piece p = getPiece(s);
-                if (p.getColor() == color && p.getClass() == King.class) {
+                if (p != null && p.getColor() == color && p.getClass() == King.class) {
                     return s;
                 }
             }
         }
         return null;
+    }
+
+    /**
+     * Returns true if the player whose turn it is is checking the other player's
+     * king.
+     */
+    public boolean isKingInCheck() {
+        Square king = getKingLocation(turn.opposite());
+        for (int r = 1; r <= 8; r++) {
+            for (char f = 'a'; f <= 'h'; f++) {
+                Square attacker = new Square(new Rank(r), new File(f));
+                if (getPieceColor(attacker) == turn) {
+                    MoveLegality attackerLegality = getLegalityIgnoreCheck(new Move(this, attacker, king));
+                    if (attackerLegality == MoveLegality.Legal) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns true if the player whose turn it is is in checkmate.
+     */
+    public boolean isPlayerInCheckmate() {
+        for (int rFrom = 1; rFrom <= 8; rFrom++) {
+            for (char fFrom = 'a'; fFrom <= 'h'; fFrom++) {
+                Square from = new Square(new Rank(rFrom), new File(fFrom));
+                if (getPieceColor(from) != turn) {
+                    continue;
+                }
+
+                for (int rTo = 1; rTo <= 8; rTo++) {
+                    for (char fTo = 'a'; fTo <= 'h'; fTo++) {
+                        Square to = new Square(new Rank(rTo), new File(fTo));
+
+                        MoveLegality legality = getLegality(new Move(this, from, to));
+                        if (legality == MoveLegality.Legal) {
+                            if (!isKingInCheck()) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns the color of the current player's turn.
+     */
+    public PieceColor getTurn() {
+        return turn;
     }
 }

@@ -1,6 +1,7 @@
 package org.cis1200.chess.piece;
 
 import org.cis1200.chess.Board;
+import org.cis1200.chess.Move;
 import org.cis1200.chess.MoveLegality;
 import org.cis1200.chess.Square;
 
@@ -10,12 +11,10 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public char getNotationChar() {
-        return 'P';
-    }
+    public MoveLegality getLegality(Board board, Move move) {
+        Square from = move.getFrom();
+        Square to = move.getTo();
 
-    @Override
-    public MoveLegality getLegality(Board board, Square from, Square to) {
         int fileDiff = Math.abs(from.getFile().getIndex() - to.getFile().getIndex());
         int rankDiff = to.getRank().getIndex() - from.getRank().getIndex();
 
@@ -100,5 +99,10 @@ public class Pawn extends Piece {
         // if (fileDiff == 1) {
 
         // }
+    }
+
+    @Override
+    public String toString() {
+        return "";
     }
 }

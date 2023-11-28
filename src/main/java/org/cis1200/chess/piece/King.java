@@ -1,6 +1,7 @@
 package org.cis1200.chess.piece;
 
 import org.cis1200.chess.Board;
+import org.cis1200.chess.Move;
 import org.cis1200.chess.MoveLegality;
 import org.cis1200.chess.Square;
 
@@ -10,12 +11,10 @@ public class King extends Piece {
     }
 
     @Override
-    public char getNotationChar() {
-        return 'K';
-    }
+    public MoveLegality getLegality(Board board, Move move) {
+        Square from = move.getFrom();
+        Square to = move.getTo();
 
-    @Override
-    public MoveLegality getLegality(Board board, Square from, Square to) {
         int rankDiff = Math.abs(to.getRank().getIndex() - from.getRank().getIndex());
         int fileDiff = Math.abs(from.getFile().getIndex() - to.getFile().getIndex());
 
@@ -26,5 +25,10 @@ public class King extends Piece {
         }
 
         return MoveLegality.InaccessibleSquare;
+    }
+
+    @Override
+    public String toString() {
+        return "K";
     }
 }

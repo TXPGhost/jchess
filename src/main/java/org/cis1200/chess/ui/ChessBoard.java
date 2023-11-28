@@ -1,4 +1,4 @@
-package org.cis1200.chess;
+package org.cis1200.chess.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,13 +16,22 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import org.cis1200.chess.Board;
+import org.cis1200.chess.File;
+import org.cis1200.chess.Move;
+import org.cis1200.chess.MoveLegality;
+import org.cis1200.chess.Rank;
+import org.cis1200.chess.Square;
 import org.cis1200.chess.piece.Piece;
+import org.cis1200.chess.piece.PieceColor;
 import org.cis1200.chess.piece.PieceImages;
 
-public class Chess extends JPanel {
+public class ChessBoard extends JPanel {
     private static final Color SQUARE_LIGHT = new Color(255, 255, 255);
     private static final Color SQUARE_DARK = new Color(200, 150, 100);
     private static final Color SQUARE_SELECTED = new Color(255, 255, 0);
+
+    private boolean canEditPast;
 
     private List<Board> boards;
     private int currentIndex;
@@ -32,10 +41,14 @@ public class Chess extends JPanel {
     private int mouseX;
     private int mouseY;
 
-    public Chess() {
-        boards = new ArrayList<Board>();
+    private List<MoveListener> moveListeners;
+
+    public ChessBoard() {
+        boards = new ArrayList<>();
         boards.add(new Board());
         currentIndex = 0;
+        canEditPast = false;
+        moveListeners = new ArrayList<>();
 
         try {
             pieceImages = new PieceImages();
@@ -57,16 +70,34 @@ public class Chess extends JPanel {
             public void mouseReleased(MouseEvent e) {
                 Square movingTo = getHoveredSquare();
 
-                // Play the move if the latest board is in play
-                if (currentIndex == boards.size() - 1) {
+                // Play the requested move
+                if (canEditPast || currentIndex == boards.size() - 1) {
                     Board current = boards.get(currentIndex);
                     if (selected != null && current.getPiece(selected) != null
                             && !movingTo.equals(selected)) {
-                        MoveLegality legality = current.getLegality(selected, movingTo);
+                        Move move = new Move(current, selected, movingTo);
+                        MoveLegality legality = current.getLegality(move);
                         System.out.println(legality);
                         if (legality.isLegal()) {
-                            boards.add(current.withMove(selected, movingTo));
+                            // Truncate the move list, if necessary
+                            if (currentIndex != boards.size() - 1) {
+                                boards = new ArrayList<>(boards.subList(0, currentIndex + 1));
+                            }
+
+                            // Add the new move
+                            Board next = current.withMove(move);
+                            boards.add(next);
                             currentIndex++;
+
+                            // Check for checkmate
+                            if (next.isPlayerInCheckmate()) {
+                                System.out.println("Checkmate!");
+                            }
+
+                            // Call back listeners
+                            for (MoveListener listener : moveListeners) {
+                                listener.movePlayed(move);
+                            }
                         }
                     }
                 }
@@ -99,7 +130,6 @@ public class Chess extends JPanel {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                     currentIndex = Math.max(0, currentIndex - 1);
-
                     repaint();
                 } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                     currentIndex = Math.min(boards.size() - 1, currentIndex + 1);
@@ -114,6 +144,29 @@ public class Chess extends JPanel {
         int f = mouseX * 8 / getWidth();
 
         return new Square(new Rank(r + 1), new File((char) (f + 'a')));
+    }
+
+    public boolean getCanEditPast() {
+        return canEditPast;
+    }
+
+    public void setCanEditPast(boolean canEditPast) {
+        this.canEditPast = canEditPast;
+    }
+
+    public String getMoveHistory() {
+        String moveHistory = "";
+        for (int i = 1; i < boards.size(); i++) {
+            if (moveHistory != "") {
+                moveHistory += "   ";
+            }
+            moveHistory += i + ". " + boards.get(i).getLastMove();
+        }
+        return moveHistory;
+    }
+
+    public PieceColor getTurn() {
+        return boards.get(currentIndex).getTurn();
     }
 
     @Override
@@ -159,7 +212,8 @@ public class Chess extends JPanel {
                         File file = new File((char) (f + 'a'));
 
                         if (sel != null) {
-                            MoveLegality legality = current.getLegality(selected, new Square(rank, file));
+                            MoveLegality legality = current
+                                    .getLegality(new Move(current, selected, new Square(rank, file)));
                             if (legality == MoveLegality.Legal) {
                                 g.drawImage(pieceImages.MOVE_DOT, x, y, width, height, null);
                             }
@@ -177,5 +231,13 @@ public class Chess extends JPanel {
                 g.drawImage(b, mouseX - width / 2, mouseY - width / 2, width, height, null);
             }
         }
+    }
+
+    public void addMoveListener(MoveListener listener) {
+        moveListeners.add(listener);
+    }
+
+    public static interface MoveListener {
+        public void movePlayed(Move move);
     }
 }

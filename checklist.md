@@ -2,7 +2,7 @@
 
 - [x] Display chess board
 - [ ] Turn indicator
-- [ ] Notation
+- [x] Notation
 - [ ] Clock
 - [ ] Force square board size
 
@@ -11,6 +11,7 @@
 - [x] Make moves
 - [x] Cycle back/forth beteween moves
 - [x] Show possible moves
+- [x] Allow editing past
 - [ ] New game, settings, etc.
 - [ ] Checkmate
 - [ ] Stalemate
@@ -51,8 +52,8 @@
   - [x] Basic movement
   - [x] Cannot same side capture
   - [ ] Blocked by other pieces
-  - [ ] Cannot move into check
-  - [ ] Must get out of check
+  - [x] Cannot move into check
+  - [x] Must get out of check
   - [ ] Castling
     - [ ] Cannot castle while having been in check
     - [ ] Cannot castle after check
