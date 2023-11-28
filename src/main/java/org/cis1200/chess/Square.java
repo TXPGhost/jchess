@@ -37,10 +37,10 @@ public class Square {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (this.getClass() != o.getClass()) {
+        } else if (getClass() != o.getClass()) {
             return false;
         } else {
-            return this.rank.equals(((Square) o).rank) && this.file.equals(((Square) o).file);
+            return rank.equals(((Square) o).rank) && file.equals(((Square) o).file);
         }
     }
 
