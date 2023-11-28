@@ -12,6 +12,10 @@
 - [x] Cycle back/forth beteween moves
 - [x] Show possible moves
 - [ ] New game, settings, etc.
+- [ ] Checkmate
+- [ ] Stalemate
+- [ ] 3 move repetition
+- [ ] 50 move rule
 
 # File IO
 
