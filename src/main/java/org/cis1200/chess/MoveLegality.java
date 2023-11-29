@@ -2,6 +2,8 @@ package org.cis1200.chess;
 
 public enum MoveLegality {
     Legal(true, "Legal move."),
+    LegalCastleKingSide(true, "Legal move (castling kingside)."),
+    LegalCastleQueenSide(true, "Legal move (castling queenside)."),
     WrongTurn(false, "You cannot move this piece."),
     NoSuchPiece(false, "You must select a piece to move."),
     PawnNoPieceToCapture(false, "You must capture a piece to move diagonally."),

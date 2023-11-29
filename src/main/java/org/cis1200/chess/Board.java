@@ -29,6 +29,11 @@ public class Board {
     private PieceColor turn;
 
     /**
+     * Records who can castle.
+     */
+    private CastlingRestrictions castlingRestrictions;
+
+    /**
      * Constructs a new board with the standard chess board layout.
      */
     public Board() {
@@ -41,6 +46,7 @@ public class Board {
     public Board(InitialBoardState initialBoardState) {
         board = new Piece[8][8];
         turn = PieceColor.White;
+        castlingRestrictions = new CastlingRestrictions();
 
         if (initialBoardState == InitialBoardState.Empty) {
             return;
@@ -86,17 +92,19 @@ public class Board {
     }
 
     /**
-     * Returns the piece at the given rank and file indices.
-     */
-    public Piece getPieceRaw(int rank, int file) {
-        return board[rank][file];
-    }
-
-    /**
      * Sets the piece at the given location.
      */
     private void setPiece(Square square, Piece piece) {
         board[square.getRank().getIndex()][square.getFile().getIndex()] = piece;
+    }
+
+    /**
+     * Takes the piece at the given location, returning it.
+     */
+    private Piece takePiece(Square square) {
+        Piece p = getPiece(square);
+        setPiece(square, null);
+        return p;
     }
 
     /**
@@ -115,6 +123,42 @@ public class Board {
                 } else {
                     next.setPiece(square, getPiece(square));
                 }
+
+            }
+        }
+
+        // Perform castling
+        CastleSide castleSide = move.getCastleSide();
+        if (castleSide == CastleSide.King && turn == PieceColor.White) {
+            next.setPiece(new Square("f1"), next.takePiece(new Square("h1")));
+        } else if (castleSide == CastleSide.Queen && turn == PieceColor.White) {
+            next.setPiece(new Square("d1"), next.takePiece(new Square("a1")));
+        } else if (castleSide == CastleSide.King && turn == PieceColor.Black) {
+            next.setPiece(new Square("f8"), next.takePiece(new Square("h8")));
+        } else if (castleSide == CastleSide.Queen && turn == PieceColor.Black) {
+            next.setPiece(new Square("d8"), next.takePiece(new Square("a8")));
+        }
+
+        next.turn = switch (turn) {
+            case White -> PieceColor.Black;
+            case Black -> PieceColor.White;
+        };
+        next.lastMove = move;
+        next.castlingRestrictions = new CastlingRestrictions(castlingRestrictions, move);
+
+        return next;
+    }
+
+    /**
+     * Returns a new board where the turns are flipped. Note that this never occurs
+     * in normal chess.
+     */
+    public Board withTurnsFlipped() {
+        Board next = new Board(InitialBoardState.Empty);
+        for (int r = 1; r <= 8; r++) {
+            for (char f = 'a'; f <= 'h'; f++) {
+                Square square = new Square(new Rank(r), new File(f));
+                next.setPiece(square, getPiece(square));
             }
         }
 
@@ -123,7 +167,7 @@ public class Board {
             case Black -> PieceColor.White;
         };
 
-        next.lastMove = move;
+        next.lastMove = lastMove;
 
         return next;
     }
@@ -156,7 +200,7 @@ public class Board {
             return MoveLegality.SameSideCapture;
         }
 
-        return p.getLegality(this, move);
+        return p.getLegality(move);
     }
 
     /**
@@ -171,7 +215,7 @@ public class Board {
 
         // Make sure the king would remain out of check
         Board after = withMove(move);
-        if (after.isKingInCheck()) {
+        if (after.isChecking()) {
             return MoveLegality.WouldBeInCheck;
         }
 
@@ -217,13 +261,14 @@ public class Board {
      * Returns true if the player whose turn it is is checking the other player's
      * king.
      */
-    public boolean isKingInCheck() {
+    public boolean isChecking() {
         Square king = getKingLocation(turn.opposite());
         for (int r = 1; r <= 8; r++) {
             for (char f = 'a'; f <= 'h'; f++) {
                 Square attacker = new Square(new Rank(r), new File(f));
                 if (getPieceColor(attacker) == turn) {
-                    MoveLegality attackerLegality = getLegalityIgnoreCheck(new Move(this, attacker, king));
+                    MoveLegality attackerLegality = getLegalityIgnoreCheck(
+                            new Move(this, attacker, king));
                     if (attackerLegality == MoveLegality.Legal) {
                         return true;
                     }
@@ -237,7 +282,7 @@ public class Board {
     /**
      * Returns true if the player whose turn it is is in checkmate.
      */
-    public boolean isPlayerInCheckmate() {
+    public boolean isInCheckmate() {
         for (int rFrom = 1; rFrom <= 8; rFrom++) {
             for (char fFrom = 'a'; fFrom <= 'h'; fFrom++) {
                 Square from = new Square(new Rank(rFrom), new File(fFrom));
@@ -251,7 +296,7 @@ public class Board {
 
                         MoveLegality legality = getLegality(new Move(this, from, to));
                         if (legality == MoveLegality.Legal) {
-                            if (!isKingInCheck()) {
+                            if (!isChecking()) {
                                 return false;
                             }
                         }
@@ -268,5 +313,12 @@ public class Board {
      */
     public PieceColor getTurn() {
         return turn;
+    }
+
+    /**
+     * Returns the castling restrictions of the current board.
+     */
+    public CastlingRestrictions getCastlingRestrictions() {
+        return castlingRestrictions;
     }
 }

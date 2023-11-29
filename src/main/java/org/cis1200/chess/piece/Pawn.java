@@ -11,7 +11,8 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public MoveLegality getLegality(Board board, Move move) {
+    public MoveLegality getLegality(Move move) {
+        Board board = move.getBoard();
         Square from = move.getFrom();
         Square to = move.getTo();
 
@@ -76,29 +77,6 @@ public class Pawn extends Piece {
             // If we get here, the pawn is trying to move off the board
             return MoveLegality.InaccessibleSquare;
         }
-
-        // if (fileDiff <= 1) {
-        // if (getColor() == PieceColor.WHITE && rankDiff == 1) {
-        // return true;
-        // } else if (getColor() == PieceColor.BLACK && rankDiff == -1) {
-        // return true;
-        // }
-        // }
-        // if (fileDiff == 0) {
-        // if (canDoubleMoveWhite && getColor() == PieceColor.WHITE && rankDiff == 2) {
-        // return true;
-        // } else if (canDoubleMoveBlack && getColor() == PieceColor.BLACK && rankDiff
-        // == -2) {
-        // return true;
-        // }
-        // }
-        // return false;
-
-        // int fileDiff = Math.abs(from.getFile().getIndex() - to.getFile().getIndex());
-
-        // if (fileDiff == 1) {
-
-        // }
     }
 
     @Override

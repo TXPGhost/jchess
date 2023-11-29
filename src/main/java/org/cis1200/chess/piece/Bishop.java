@@ -11,7 +11,8 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public MoveLegality getLegality(Board board, Move move) {
+    public MoveLegality getLegality(Move move) {
+        Board board = move.getBoard();
         Square from = move.getFrom();
         Square to = move.getTo();
 

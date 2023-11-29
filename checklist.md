@@ -1,10 +1,10 @@
 # Interface
 
 - [x] Display chess board
-- [ ] Turn indicator
+- [x] Turn indicator
 - [x] Notation
 - [ ] Clock
-- [ ] Force square board size
+- [x] Force square board size
 
 # Gameplay
 
@@ -55,6 +55,7 @@
   - [x] Cannot move into check
   - [x] Must get out of check
   - [ ] Castling
-    - [ ] Cannot castle while having been in check
-    - [ ] Cannot castle after check
+    - [ ] Cannot castle in check
+    - [ ] Cannot castle after rook has moved
+    - [x] Cannot castle after check
     - [ ] Cannot castle through check

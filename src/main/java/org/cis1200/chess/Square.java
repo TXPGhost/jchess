@@ -17,8 +17,8 @@ public class Square {
         if (notation.length() != 2) {
             throw new IllegalArgumentException("notation must be a string of length 2");
         }
-        this.rank = new Rank(notation.charAt(0) - '1' + 1);
-        this.file = new File(notation.charAt(1));
+        this.rank = new Rank(notation.charAt(1) - '1' + 1);
+        this.file = new File(notation.charAt(0));
     }
 
     public Square offsetBy(int rankOffset, int fileOffset) {
@@ -35,7 +35,9 @@ public class Square {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
+        if (o == null) {
+            return false;
+        } else if (this == o) {
             return true;
         } else if (getClass() != o.getClass()) {
             return false;

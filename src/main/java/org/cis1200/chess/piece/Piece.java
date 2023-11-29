@@ -29,5 +29,5 @@ public abstract class Piece {
      * piece, if it exists,
      * is not the same colors as the from piece.
      */
-    public abstract MoveLegality getLegality(Board board, Move move);
+    public abstract MoveLegality getLegality(Move move);
 }

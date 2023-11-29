@@ -1,7 +1,6 @@
 package org.cis1200.chess.ui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyAdapter;
@@ -27,11 +26,13 @@ import org.cis1200.chess.piece.PieceColor;
 import org.cis1200.chess.piece.PieceImages;
 
 public class ChessBoard extends JPanel {
-    private static final Color SQUARE_LIGHT = new Color(255, 255, 255);
-    private static final Color SQUARE_DARK = new Color(200, 150, 100);
-    private static final Color SQUARE_SELECTED = new Color(255, 255, 0);
+    private static final Color SQUARE_LIGHT = new Color(195, 163, 113);
+    private static final Color SQUARE_DARK = new Color(113, 78, 47);
 
     private boolean canEditPast;
+
+    private boolean flipped;
+    private boolean autoFlipped;
 
     private List<Board> boards;
     private int currentIndex;
@@ -56,7 +57,6 @@ public class ChessBoard extends JPanel {
             e.printStackTrace();
         }
 
-        setPreferredSize(new Dimension(900, 900));
         setFocusable(true);
 
         addMouseListener(new MouseAdapter() {
@@ -90,7 +90,7 @@ public class ChessBoard extends JPanel {
                             currentIndex++;
 
                             // Check for checkmate
-                            if (next.isPlayerInCheckmate()) {
+                            if (next.isInCheckmate()) {
                                 System.out.println("Checkmate!");
                             }
 
@@ -128,20 +128,92 @@ public class ChessBoard extends JPanel {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    currentIndex = Math.max(0, currentIndex - 1);
-                    repaint();
-                } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    currentIndex = Math.min(boards.size() - 1, currentIndex + 1);
-                    repaint();
+                int key = e.getKeyCode();
+                if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_DOWN || key == KeyEvent.VK_A
+                        || key == KeyEvent.VK_S
+                        || key == KeyEvent.VK_H || key == KeyEvent.VK_J) {
+                    if (e.getModifiers() == KeyEvent.SHIFT_MASK) {
+                        goToStart();
+                    } else {
+                        goBackMove();
+                    }
+                } else if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_UP || key == KeyEvent.VK_D
+                        || key == KeyEvent.VK_W || key == KeyEvent.VK_L
+                        || key == KeyEvent.VK_K) {
+                    if (e.getModifiers() == KeyEvent.SHIFT_MASK) {
+                        goToEnd();
+                    } else {
+                        goForwardMove();
+                    }
+                } else if (key == KeyEvent.VK_F) {
+                    setFlipped(!getFlipped());
                 }
             }
         });
     }
 
+    public void goBackMove() {
+        currentIndex = Math.max(0, currentIndex - 1);
+        repaint();
+
+    }
+
+    public void goForwardMove() {
+        currentIndex = Math.min(boards.size() - 1, currentIndex + 1);
+        repaint();
+    }
+
+    public void goToStart() {
+        currentIndex = 0;
+        repaint();
+    }
+
+    public void goToEnd() {
+        currentIndex = boards.size() - 1;
+        repaint();
+    }
+
+    public void reset() {
+        boards = new ArrayList<>();
+        boards.add(new Board());
+        currentIndex = 0;
+
+        // Call back listeners
+        for (MoveListener listener : moveListeners) {
+            listener.movePlayed(null);
+        }
+
+        repaint();
+    }
+
+    public void setFlipped(boolean flipped) {
+        this.flipped = flipped;
+        repaint();
+    }
+
+    public void setAutoFlipped(boolean autoFlipped) {
+        this.autoFlipped = autoFlipped;
+        repaint();
+    }
+
+    public boolean getFlipped() {
+        if (autoFlipped) {
+            return currentIndex % 2 == 1;
+        }
+
+        return flipped;
+    }
+
     private Square getHoveredSquare() {
-        int r = 7 - mouseY * 8 / getHeight();
-        int f = mouseX * 8 / getWidth();
+        int r, f;
+
+        if (getFlipped()) {
+            r = mouseY * 8 / getHeight();
+            f = 7 - mouseX * 8 / getWidth();
+        } else {
+            r = 7 - mouseY * 8 / getHeight();
+            f = mouseX * 8 / getWidth();
+        }
 
         return new Square(new Rank(r + 1), new File((char) (f + 'a')));
     }
@@ -154,18 +226,34 @@ public class ChessBoard extends JPanel {
         this.canEditPast = canEditPast;
     }
 
-    public String getMoveHistory() {
+    public String getGameNotation() {
         String moveHistory = "";
         for (int i = 1; i < boards.size(); i++) {
             if (moveHistory != "") {
-                moveHistory += "   ";
+                moveHistory += "  ";
+                if (i % 2 == 1) {
+                    moveHistory += " ";
+                }
             }
-            moveHistory += i + ". " + boards.get(i).getLastMove();
+            if (i % 2 == 1) {
+                moveHistory += ((i + 1) / 2) + ". ";
+            }
+            moveHistory += boards.get(i).getLastMove();
         }
         return moveHistory;
     }
 
-    public PieceColor getTurn() {
+    /**
+     * Returns the turn of the plaer based on the current board view.
+     */
+    public PieceColor getCurrentTurn() {
+        return boards.get(currentIndex).getTurn();
+    }
+
+    /**
+     * Returns the turn of the player based on the most recent board.
+     */
+    public PieceColor getLatestTurn() {
         return boards.get(currentIndex).getTurn();
     }
 
@@ -178,29 +266,30 @@ public class ChessBoard extends JPanel {
         int width = getWidth() / 8 + 1;
         int height = getHeight() / 8 + 1;
 
-        for (int r = 0; r < 8; r++) {
-            for (int f = 0; f < 8; f++) {
-                int x = f * getWidth() / 8;
-                int y = (7 - r) * getHeight() / 8;
+        for (int r = 1; r <= 8; r++) {
+            for (char f = 'a'; f <= 'h'; f++) {
+                Rank rank = new Rank(r);
+                File file = new File(f);
+                Square s = new Square(rank, file);
 
-                boolean isSelected = false;
-                if (selected != null) {
-                    boolean sameRank = selected.getRank().getIndex() == r;
-                    boolean sameFile = selected.getFile().getIndex() == f;
-                    isSelected = sameRank && sameFile;
-                }
-                if (isSelected) {
-                    g.setColor(SQUARE_SELECTED);
-                    g.fillRect(x, y, width, height);
+                int x, y;
+                if (getFlipped()) {
+                    x = (7 - file.getIndex()) * getWidth() / 8;
+                    y = rank.getIndex() * getHeight() / 8;
                 } else {
-                    if ((r + f) % 2 == 0) {
-                        g.setColor(SQUARE_DARK);
-                    } else {
-                        g.setColor(SQUARE_LIGHT);
-                    }
-                    g.fillRect(x, y, width, height);
+                    x = file.getIndex() * getWidth() / 8;
+                    y = (7 - rank.getIndex()) * getHeight() / 8;
+                }
 
-                    Piece p = current.getPieceRaw(r, f);
+                if ((rank.getIndex() + file.getIndex()) % 2 == 0) {
+                    g.setColor(SQUARE_DARK);
+                } else {
+                    g.setColor(SQUARE_LIGHT);
+                }
+                g.fillRect(x, y, width, height);
+
+                if (!s.equals(selected)) {
+                    Piece p = current.getPiece(s);
                     if (p != null) {
                         BufferedImage b = pieceImages.getImage(p);
                         g.drawImage(b, x, y, width, height, null);
@@ -208,23 +297,24 @@ public class ChessBoard extends JPanel {
 
                     if (selected != null) {
                         Piece sel = current.getPiece(selected);
-                        Rank rank = new Rank(r + 1);
-                        File file = new File((char) (f + 'a'));
 
                         if (sel != null) {
                             MoveLegality legality = current
-                                    .getLegality(new Move(current, selected, new Square(rank, file)));
+                                    .getLegality(
+                                            new Move(current, selected, new Square(rank, file)));
                             if (legality == MoveLegality.Legal) {
                                 g.drawImage(pieceImages.MOVE_DOT, x, y, width, height, null);
                             }
-
                         }
                     }
+
                 }
             }
         }
 
-        if (selected != null) {
+        if (selected != null)
+
+        {
             Piece p = current.getPiece(selected);
             if (p != null) {
                 BufferedImage b = pieceImages.getImage(p);
@@ -239,5 +329,17 @@ public class ChessBoard extends JPanel {
 
     public static interface MoveListener {
         public void movePlayed(Move move);
+    }
+
+    /**
+     * Returns the color of the checkmated player. Will return null if the game is
+     * not over yet.
+     */
+    public PieceColor getWinner() {
+        Board latest = boards.get(boards.size() - 1);
+        if (latest.isInCheckmate()) {
+            return latest.getTurn().opposite();
+        }
+        return null;
     }
 }

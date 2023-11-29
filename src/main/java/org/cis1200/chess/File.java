@@ -20,7 +20,9 @@ public class File {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
+        if (o == null) {
+            return false;
+        } else if (this == o) {
             return true;
         } else if (this.getClass() != o.getClass()) {
             return false;
