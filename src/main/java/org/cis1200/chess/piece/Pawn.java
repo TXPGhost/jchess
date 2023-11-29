@@ -3,6 +3,7 @@ package org.cis1200.chess.piece;
 import org.cis1200.chess.Board;
 import org.cis1200.chess.Move;
 import org.cis1200.chess.MoveLegality;
+import org.cis1200.chess.Rank;
 import org.cis1200.chess.Square;
 
 public class Pawn extends Piece {
@@ -20,16 +21,27 @@ public class Pawn extends Piece {
         int rankDiff = to.getRank().getIndex() - from.getRank().getIndex();
 
         try {
-
             // Check white moves
             if (getColor() == PieceColor.White && rankDiff > 0) {
                 if (fileDiff == 1 && rankDiff == 1) {
+                    // Check for capture
                     if (board.getPieceExists(to)) {
                         return MoveLegality.Legal;
                     } else {
+                        Move lastMove = board.getLastMove();
+                        if (from.getRank().equals(new Rank(5))
+                                && lastMove != null && lastMove.getPiece().getClass() == Pawn.class
+                                && lastMove.getFrom().getRank().equals(new Rank(7))
+                                && lastMove.getFrom().getFile().equals(to.getFile())
+                                && lastMove.getTo().getRank().equals(new Rank(5))) {
+                            return MoveLegality.Legal;
+                        }
+
+                        // Otherwise, a capture cannot be performed
                         return MoveLegality.PawnNoPieceToCapture;
                     }
                 } else if (fileDiff == 0) {
+                    // Check for push
                     boolean blocked = board.getPieceExists(from.offsetBy(1, 0));
                     if (blocked) {
                         return MoveLegality.MovementBlocked;
@@ -49,12 +61,24 @@ public class Pawn extends Piece {
             // Check black moves
             else if (getColor() == PieceColor.Black && rankDiff < 0) {
                 if (fileDiff == 1 && rankDiff == -1) {
+                    // Check for capture
                     if (board.getPieceExists(to)) {
                         return MoveLegality.Legal;
                     } else {
+                        Move lastMove = board.getLastMove();
+                        if (from.getRank().equals(new Rank(4))
+                                && lastMove != null && lastMove.getPiece().getClass() == Pawn.class
+                                && lastMove.getFrom().getRank().equals(new Rank(2))
+                                && lastMove.getFrom().getFile().equals(to.getFile())
+                                && lastMove.getTo().getRank().equals(new Rank(4))) {
+                            return MoveLegality.Legal;
+                        }
+
+                        // Otherwise, a capture cannot be performed
                         return MoveLegality.PawnNoPieceToCapture;
                     }
                 } else if (fileDiff == 0) {
+                    // Check for push
                     boolean blocked = board.getPieceExists(from.offsetBy(-1, 0));
                     if (blocked) {
                         return MoveLegality.MovementBlocked;
@@ -82,5 +106,10 @@ public class Pawn extends Piece {
     @Override
     public String toString() {
         return "";
+    }
+
+    @Override
+    public int getPointValue() {
+        return 1;
     }
 }

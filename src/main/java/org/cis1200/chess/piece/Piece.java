@@ -1,9 +1,7 @@
 package org.cis1200.chess.piece;
 
-import org.cis1200.chess.Board;
 import org.cis1200.chess.Move;
 import org.cis1200.chess.MoveLegality;
-import org.cis1200.chess.Square;
 
 public abstract class Piece {
     private PieceColor color;
@@ -30,4 +28,9 @@ public abstract class Piece {
      * is not the same colors as the from piece.
      */
     public abstract MoveLegality getLegality(Move move);
+
+    /**
+     * Returns the standard point value of the given piece.
+     */
+    public abstract int getPointValue();
 }

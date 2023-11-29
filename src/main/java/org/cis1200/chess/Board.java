@@ -139,6 +139,21 @@ public class Board {
             next.setPiece(new Square("d8"), next.takePiece(new Square("a8")));
         }
 
+        // Perform en passant
+        if (!getPieceExists(move.getTo()) && move.getPiece().getClass() == Pawn.class
+                && !move.getFrom().getRank().equals(move.getTo().getRank())) {
+            next.setPiece(new Square(move.getFrom().getRank(), move.getTo().getFile()), null);
+        }
+
+        // Perform promotion
+        if (move.getPiece().getClass() == Pawn.class) {
+            if (move.getPieceColor().equals(PieceColor.White) && move.getTo().getRank().equals(new Rank(8))) {
+                next.setPiece(move.getTo(), new Queen(PieceColor.White));
+            } else if (move.getPieceColor().equals(PieceColor.Black) && move.getTo().getRank().equals(new Rank(1))) {
+                next.setPiece(move.getTo(), new Queen(PieceColor.Black));
+            }
+        }
+
         next.turn = switch (turn) {
             case White -> PieceColor.Black;
             case Black -> PieceColor.White;
@@ -320,5 +335,37 @@ public class Board {
      */
     public CastlingRestrictions getCastlingRestrictions() {
         return castlingRestrictions;
+    }
+
+    /**
+     * Returns the material value for the given player based on standard piece point
+     * values.
+     */
+    public int countMaterial(PieceColor color) {
+        int material = 0;
+        for (int r = 1; r <= 8; r++) {
+            for (char f = 'a'; f <= 'h'; f++) {
+                Square s = new Square(new Rank(r), new File(f));
+                Piece p = getPiece(s);
+                if (p != null && p.getColor() == color) {
+                    material += p.getPointValue();
+                }
+            }
+        }
+        return material;
+    }
+
+    /**
+     * Evaluates the current board state, where more positive values are good for
+     * white and more negative values are good for black.
+     */
+    public float eval() {
+        if (isInCheckmate()) {
+            return switch (turn) {
+                case White -> -1000000;
+                case Black -> 1000000;
+            };
+        }
+        return countMaterial(PieceColor.White) - countMaterial(PieceColor.Black);
     }
 }

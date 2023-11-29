@@ -69,4 +69,9 @@ public class Rook extends Piece {
     public String toString() {
         return "R";
     }
+
+    @Override
+    public int getPointValue() {
+        return 5;
+    }
 }

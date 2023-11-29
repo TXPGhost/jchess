@@ -30,4 +30,9 @@ public class Knight extends Piece {
     public String toString() {
         return "N";
     }
+
+    @Override
+    public int getPointValue() {
+        return 3;
+    }
 }

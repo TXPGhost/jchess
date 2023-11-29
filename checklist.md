@@ -31,8 +31,9 @@
   - [x] Blocked by pawn ahead
   - [x] Double pawn move
   - [x] Capturing
-  - [ ] En passant
-  - [ ] Promotion
+  - [x] En passant
+  - [x] Promotion
+    - [ ] Promotion choice
 - [x] Knight
   - [x] Basic movement
   - [x] Cannot same side capture

@@ -178,7 +178,9 @@ public class RunChess implements Runnable {
         frame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                chessBoard.setPreferredSize(new Dimension(chessBoard.getHeight(), chessBoard.getHeight()));
+                chessBoard.setPreferredSize(
+                        new Dimension(chessBoard.getHeight(), chessBoard.getHeight())
+                );
             }
         });
 

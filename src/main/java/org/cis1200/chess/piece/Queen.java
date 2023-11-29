@@ -106,4 +106,9 @@ public class Queen extends Piece {
     public String toString() {
         return "Q";
     }
+
+    @Override
+    public int getPointValue() {
+        return 9;
+    }
 }

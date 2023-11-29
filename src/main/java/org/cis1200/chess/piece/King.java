@@ -71,4 +71,9 @@ public class King extends Piece {
     public String toString() {
         return "K";
     }
+
+    @Override
+    public int getPointValue() {
+        return 0;
+    }
 }

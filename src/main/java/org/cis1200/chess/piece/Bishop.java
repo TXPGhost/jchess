@@ -73,4 +73,9 @@ public class Bishop extends Piece {
     public String toString() {
         return "B";
     }
+
+    @Override
+    public int getPointValue() {
+        return 3;
+    }
 }
