@@ -1,9 +1,15 @@
 package org.cis1200.chess;
 
+import java.util.Collection;
+
+import org.cis1200.chess.piece.Bishop;
 import org.cis1200.chess.piece.King;
+import org.cis1200.chess.piece.Knight;
 import org.cis1200.chess.piece.Pawn;
 import org.cis1200.chess.piece.Piece;
 import org.cis1200.chess.piece.PieceColor;
+import org.cis1200.chess.piece.Queen;
+import org.cis1200.chess.piece.Rook;
 
 public class Move {
     Board board;
@@ -23,6 +29,20 @@ public class Move {
         if (board.getPiece(from) == null) {
             throw new IllegalArgumentException("from square must contain a piece");
         }
+    }
+
+    public Move(Board board, String notation) throws DeserializeMoveException {
+        Collection<Move> possibleMoves = board.getPossibleMoves();
+        for (Move move : possibleMoves) {
+            System.out.println(move.toString() + " ?= " + notation);
+            if (move.toString().equals(notation)) {
+                this.board = board;
+                from = move.getFrom();
+                to = move.getTo();
+                return;
+            }
+        }
+        throw new DeserializeMoveException();
     }
 
     public Square getFrom() {
@@ -76,8 +96,8 @@ public class Move {
             }
         }
 
-        Board next = board.withMove(this);
-        if (next.withTurnsFlipped().isChecking()) {
+        Board next = new Board(board, this);
+        if (next.withTurnsFlipped().isInCheck()) {
             check = "+";
 
             if (next.isInCheckmate()) {

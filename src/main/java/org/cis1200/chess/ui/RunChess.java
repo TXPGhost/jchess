@@ -7,12 +7,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowStateListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -20,17 +25,19 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.cis1200.chess.ChessGame;
+import org.cis1200.chess.DeserializeMoveException;
 import org.cis1200.chess.Move;
-import org.cis1200.chess.piece.PieceColor;
 
 public class RunChess implements Runnable {
     public void run() {
         final JFrame frame = new JFrame("Chess");
         frame.setLayout(new BorderLayout());
 
-        ChessBoard chessBoard = new ChessBoard();
-        frame.add(chessBoard, BorderLayout.WEST);
+        BoardView boardView = new BoardView();
+        frame.add(boardView, BorderLayout.WEST);
 
         final JMenuBar menuBar = new JMenuBar();
 
@@ -40,7 +47,7 @@ public class RunChess implements Runnable {
         newGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                chessBoard.reset();
+                boardView.reset();
             }
         });
         menuBarFile.add(newGame);
@@ -55,21 +62,69 @@ public class RunChess implements Runnable {
         goBackMove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                chessBoard.goBackMove();
+                boardView.goBackMove();
             }
         });
 
         goForwardMove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                chessBoard.goForwardMove();
+                boardView.goForwardMove();
             }
         });
 
         menuBarFile.addSeparator();
 
-        menuBarFile.add(new JMenuItem("Load game . . ."));
-        menuBarFile.add(new JMenuItem("Save game . . ."));
+        JMenuItem loadGame = new JMenuItem("Load game . . .");
+        loadGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                JFileChooser fc = new JFileChooser();
+                fc.setFileFilter(new FileNameExtensionFilter("CHESS file", "chess"));
+                if (fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+                    File file = fc.getSelectedFile();
+                    String fileName = file.getName();
+                    if (!fileName.substring(fileName.length() - 6, fileName.length()).equals(".chess")) {
+                        file = new File(fileName + ".chess");
+                    }
+                    try {
+                        String serialized = new String(Files.readAllBytes(Paths.get(file.getPath())));
+                        boardView.setGame(ChessGame.deserialize(serialized));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (DeserializeMoveException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        menuBarFile.add(loadGame);
+
+        JMenuItem saveGame = new JMenuItem("Save game . . .");
+        saveGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                JFileChooser fc = new JFileChooser();
+                fc.setSelectedFile(new File("game.chess"));
+                fc.setFileFilter(new FileNameExtensionFilter("CHESS file", "chess"));
+                if (fc.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
+                    File file = fc.getSelectedFile();
+                    String fileName = file.getName();
+                    if (!fileName.substring(fileName.length() - 6, fileName.length()).equals(".chess")) {
+                        file = new File(fileName + ".chess");
+                    }
+                    try {
+                        FileWriter writer = new FileWriter(file);
+                        writer.write(boardView.getGame().serialize());
+                        writer.flush();
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        menuBarFile.add(saveGame);
 
         menuBar.add(menuBarFile);
 
@@ -79,7 +134,7 @@ public class RunChess implements Runnable {
         allowEditingPast.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                chessBoard.setCanEditPast(allowEditingPast.getState());
+                boardView.setCanEditPast(allowEditingPast.getState());
             }
         });
         menuBarRules.add(allowEditingPast);
@@ -100,16 +155,16 @@ public class RunChess implements Runnable {
         autoFlipBoard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                chessBoard.setAutoFlipped(autoFlipBoard.getState());
-                flipBoard.setState(chessBoard.getFlipped());
+                boardView.setAutoFlipped(autoFlipBoard.getState());
+                flipBoard.setState(boardView.getFlipped());
                 flipBoard.setEnabled(!autoFlipBoard.getState());
             }
         });
         flipBoard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                chessBoard.setAutoFlipped(false);
-                chessBoard.setFlipped(flipBoard.getState());
+                boardView.setAutoFlipped(false);
+                boardView.setFlipped(flipBoard.getState());
                 autoFlipBoard.setState(false);
             }
         });
@@ -140,26 +195,29 @@ public class RunChess implements Runnable {
         moves.setWrapStyleWord(true);
         sidePanel.add(moves);
 
-        chessBoard.addMoveListener(new ChessBoard.MoveListener() {
+        boardView.addMoveListener(new BoardView.MoveListener() {
             @Override
             public void movePlayed(Move move) {
-                moves.setText(chessBoard.getGameNotation());
+                moves.setText(boardView.getGame().toString());
 
-                PieceColor winner = chessBoard.getWinner();
+                ChessGame.Result result = boardView.getGame().getResult();
 
-                if (winner == null) {
-                    moveIndicator.setText(switch (chessBoard.getLatestTurn()) {
+                if (result == ChessGame.Result.Undecided) {
+                    moveIndicator.setText(switch (boardView.getCurrentBoard().getTurn()) {
                         case White -> "White";
                         case Black -> "Black";
                     } + " to move.");
                 } else {
-                    moveIndicator.setText(switch (winner) {
-                        case White -> "White";
-                        case Black -> "Black";
-                    } + " wins by checkmate.");
+                    moveIndicator.setText(switch (result) {
+                        case WhiteWinsByCheckmate -> "White wins by checkmate.";
+                        case BlackWinsByCheckmate -> "Black wins by checkmate.";
+                        case DrawByRepetition -> "Draw by repetition.";
+                        case DrawByStalemate -> "Draw by stalemate.";
+                        case Undecided -> throw new IllegalStateException();
+                    });
                 }
 
-                flipBoard.setState(chessBoard.getFlipped());
+                flipBoard.setState(boardView.getFlipped());
             }
         });
 
@@ -178,9 +236,8 @@ public class RunChess implements Runnable {
         frame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                chessBoard.setPreferredSize(
-                        new Dimension(chessBoard.getHeight(), chessBoard.getHeight())
-                );
+                boardView.setPreferredSize(
+                        new Dimension(boardView.getHeight(), boardView.getHeight()));
             }
         });
 

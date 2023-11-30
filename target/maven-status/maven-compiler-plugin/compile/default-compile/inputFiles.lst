@@ -4,6 +4,8 @@
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/piece/Rook.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/piece/Queen.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/mushroom/Direction.java
+/home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/ui/BoardView.java
+/home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/ChessGame.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/Move.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/ui/RunChess.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/piece/PieceImages.java
@@ -15,7 +17,6 @@
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/CastlingRestrictions.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/Square.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/MoveContext.java
-/home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/ui/ChessBoard.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/piece/King.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/Game.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/File.java
@@ -28,5 +29,6 @@
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/mushroom/GameCourt.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/MoveLegality.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/tictactoe/RunTicTacToe.java
+/home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/DeserializeMoveException.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/mushroom/GameObj.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/piece/Piece.java

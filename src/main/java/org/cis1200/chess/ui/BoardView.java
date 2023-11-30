@@ -17,15 +17,15 @@ import javax.swing.JPanel;
 
 import org.cis1200.chess.Board;
 import org.cis1200.chess.File;
+import org.cis1200.chess.ChessGame;
 import org.cis1200.chess.Move;
 import org.cis1200.chess.MoveLegality;
 import org.cis1200.chess.Rank;
 import org.cis1200.chess.Square;
 import org.cis1200.chess.piece.Piece;
-import org.cis1200.chess.piece.PieceColor;
 import org.cis1200.chess.piece.PieceImages;
 
-public class ChessBoard extends JPanel {
+public class BoardView extends JPanel {
     private static final Color SQUARE_LIGHT = new Color(195, 163, 113);
     private static final Color SQUARE_DARK = new Color(113, 78, 47);
 
@@ -34,8 +34,8 @@ public class ChessBoard extends JPanel {
     private boolean flipped;
     private boolean autoFlipped;
 
-    private List<Board> boards;
-    private int currentIndex;
+    private ChessGame game;
+    private int viewIndex;
 
     private PieceImages pieceImages;
     private Square selected;
@@ -44,10 +44,9 @@ public class ChessBoard extends JPanel {
 
     private List<MoveListener> moveListeners;
 
-    public ChessBoard() {
-        boards = new ArrayList<>();
-        boards.add(new Board());
-        currentIndex = 0;
+    public BoardView() {
+        game = new ChessGame();
+        viewIndex = 0;
         canEditPast = false;
         moveListeners = new ArrayList<>();
 
@@ -71,30 +70,15 @@ public class ChessBoard extends JPanel {
                 Square movingTo = getHoveredSquare();
 
                 // Play the requested move
-                if (canEditPast || currentIndex == boards.size() - 1) {
-                    Board current = boards.get(currentIndex);
+                if (canEditPast || viewIndex == game.getNumBoards() - 1) {
+                    Board current = game.getBoard(viewIndex);
+
                     if (selected != null && current.getPiece(selected) != null
                             && !movingTo.equals(selected)) {
                         Move move = new Move(current, selected, movingTo);
-                        MoveLegality legality = current.getLegality(move);
-                        System.out.println(legality);
-                        if (legality.isLegal()) {
-                            // Truncate the move list, if necessary
-                            if (currentIndex != boards.size() - 1) {
-                                boards = new ArrayList<>(boards.subList(0, currentIndex + 1));
-                            }
+                        if (game.playMove(move)) {
+                            viewIndex++;
 
-                            // Add the new move
-                            Board next = current.withMove(move);
-                            boards.add(next);
-                            currentIndex++;
-
-                            // Check for checkmate
-                            if (next.isInCheckmate()) {
-                                System.out.println("Checkmate!");
-                            }
-
-                            // Call back listeners
                             for (MoveListener listener : moveListeners) {
                                 listener.movePlayed(move);
                             }
@@ -153,30 +137,41 @@ public class ChessBoard extends JPanel {
     }
 
     public void goBackMove() {
-        currentIndex = Math.max(0, currentIndex - 1);
+        viewIndex = Math.max(0, viewIndex - 1);
         repaint();
 
     }
 
     public void goForwardMove() {
-        currentIndex = Math.min(boards.size() - 1, currentIndex + 1);
+        viewIndex = Math.min(game.getNumBoards() - 1, viewIndex + 1);
         repaint();
     }
 
     public void goToStart() {
-        currentIndex = 0;
+        viewIndex = 0;
         repaint();
     }
 
     public void goToEnd() {
-        currentIndex = boards.size() - 1;
+        viewIndex = game.getNumBoards() - 1;
         repaint();
     }
 
     public void reset() {
-        boards = new ArrayList<>();
-        boards.add(new Board());
-        currentIndex = 0;
+        game = new ChessGame();
+        viewIndex = 0;
+
+        // Call back listeners
+        for (MoveListener listener : moveListeners) {
+            listener.movePlayed(null);
+        }
+
+        repaint();
+    }
+
+    public void setGame(ChessGame game) {
+        this.game = game;
+        viewIndex = game.getNumBoards() - 1;
 
         // Call back listeners
         for (MoveListener listener : moveListeners) {
@@ -198,7 +193,7 @@ public class ChessBoard extends JPanel {
 
     public boolean getFlipped() {
         if (autoFlipped) {
-            return currentIndex % 2 == 1;
+            return viewIndex % 2 == 1;
         }
 
         return flipped;
@@ -226,42 +221,23 @@ public class ChessBoard extends JPanel {
         this.canEditPast = canEditPast;
     }
 
-    public String getGameNotation() {
-        String moveHistory = "";
-        for (int i = 1; i < boards.size(); i++) {
-            if (moveHistory != "") {
-                moveHistory += "  ";
-                if (i % 2 == 1) {
-                    moveHistory += " ";
-                }
-            }
-            if (i % 2 == 1) {
-                moveHistory += ((i + 1) / 2) + ". ";
-            }
-            moveHistory += boards.get(i).getLastMove();
-        }
-        return moveHistory;
+    public ChessGame getGame() {
+        return game;
     }
 
-    /**
-     * Returns the turn of the plaer based on the current board view.
-     */
-    public PieceColor getCurrentTurn() {
-        return boards.get(currentIndex).getTurn();
+    public Board getCurrentBoard() {
+        return game.getCurrentBoard();
     }
 
-    /**
-     * Returns the turn of the player based on the most recent board.
-     */
-    public PieceColor getLatestTurn() {
-        return boards.get(currentIndex).getTurn();
+    public Board getViewBoard() {
+        return game.getBoard(viewIndex);
     }
 
     @Override
     protected void paintComponent(Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics;
 
-        Board current = boards.get(currentIndex);
+        Board current = getViewBoard();
 
         int width = getWidth() / 8 + 1;
         int height = getHeight() / 8 + 1;
@@ -301,8 +277,7 @@ public class ChessBoard extends JPanel {
                         if (sel != null) {
                             MoveLegality legality = current
                                     .getLegality(
-                                            new Move(current, selected, new Square(rank, file))
-                                    );
+                                            new Move(current, selected, new Square(rank, file)));
                             if (legality == MoveLegality.Legal) {
                                 g.drawImage(pieceImages.MOVE_DOT, x, y, width, height, null);
                             }
@@ -330,17 +305,5 @@ public class ChessBoard extends JPanel {
 
     public static interface MoveListener {
         public void movePlayed(Move move);
-    }
-
-    /**
-     * Returns the color of the checkmated player. Will return null if the game is
-     * not over yet.
-     */
-    public PieceColor getWinner() {
-        Board latest = boards.get(boards.size() - 1);
-        if (latest.isInCheckmate()) {
-            return latest.getTurn().opposite();
-        }
-        return null;
     }
 }
