@@ -277,7 +277,8 @@ public class BoardView extends JPanel {
                         if (sel != null) {
                             MoveLegality legality = current
                                     .getLegality(
-                                            new Move(current, selected, new Square(rank, file)));
+                                            new Move(current, selected, new Square(rank, file))
+                                    );
                             if (legality == MoveLegality.Legal) {
                                 g.drawImage(pieceImages.MOVE_DOT, x, y, width, height, null);
                             }

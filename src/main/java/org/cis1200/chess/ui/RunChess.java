@@ -7,9 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -84,11 +82,13 @@ public class RunChess implements Runnable {
                 if (fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
                     String fileName = file.getName();
-                    if (!fileName.substring(fileName.length() - 6, fileName.length()).equals(".chess")) {
+                    if (!fileName.substring(fileName.length() - 6, fileName.length())
+                            .equals(".chess")) {
                         file = new File(fileName + ".chess");
                     }
                     try {
-                        String serialized = new String(Files.readAllBytes(Paths.get(file.getPath())));
+                        String serialized = new String(
+                                Files.readAllBytes(Paths.get(file.getPath())));
                         boardView.setGame(ChessGame.deserialize(serialized));
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -110,7 +110,8 @@ public class RunChess implements Runnable {
                 if (fc.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
                     String fileName = file.getName();
-                    if (!fileName.substring(fileName.length() - 6, fileName.length()).equals(".chess")) {
+                    if (!fileName.substring(fileName.length() - 6, fileName.length())
+                            .equals(".chess")) {
                         file = new File(fileName + ".chess");
                     }
                     try {

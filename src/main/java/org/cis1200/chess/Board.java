@@ -123,9 +123,11 @@ public class Board {
 
         // Perform promotion
         if (move.getPiece().getClass() == Pawn.class) {
-            if (move.getPieceColor().equals(PieceColor.White) && move.getTo().getRank().equals(new Rank(8))) {
+            if (move.getPieceColor().equals(PieceColor.White)
+                    && move.getTo().getRank().equals(new Rank(8))) {
                 setPiece(move.getTo(), new Queen(PieceColor.White));
-            } else if (move.getPieceColor().equals(PieceColor.Black) && move.getTo().getRank().equals(new Rank(1))) {
+            } else if (move.getPieceColor().equals(PieceColor.Black)
+                    && move.getTo().getRank().equals(new Rank(1))) {
                 setPiece(move.getTo(), new Queen(PieceColor.Black));
             }
         }
@@ -328,7 +330,7 @@ public class Board {
             for (char f = 'a'; f <= 'h'; f++) {
                 Square attacker = new Square(new Rank(r), new File(f));
                 if (getPieceColor(attacker) == turn.opposite()) {
-                    MoveLegality attackerLegality = flipped.getLegality(
+                    MoveLegality attackerLegality = flipped.getLegalityIgnoreCheck(
                             new Move(this, attacker, king));
                     if (attackerLegality == MoveLegality.Legal) {
                         return true;
