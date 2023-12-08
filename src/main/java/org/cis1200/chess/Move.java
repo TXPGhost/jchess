@@ -2,14 +2,10 @@ package org.cis1200.chess;
 
 import java.util.Collection;
 
-import org.cis1200.chess.piece.Bishop;
 import org.cis1200.chess.piece.King;
-import org.cis1200.chess.piece.Knight;
 import org.cis1200.chess.piece.Pawn;
 import org.cis1200.chess.piece.Piece;
 import org.cis1200.chess.piece.PieceColor;
-import org.cis1200.chess.piece.Queen;
-import org.cis1200.chess.piece.Rook;
 
 public class Move {
     Board board;
@@ -82,6 +78,15 @@ public class Move {
         // Returns the move in algebraic notation
         final Piece p = board.getPiece(from);
 
+        // Check for castling
+        if (p.getClass() == King.class && Math.abs(to.getFile().getIndex() - from.getFile().getIndex()) == 2) {
+            if (to.getFile().equals(new File('g'))) {
+                return "O-O";
+            } else if (to.getFile().equals(new File('c'))) {
+                return "O-O-O";
+            }
+        }
+
         final String piece = p.toString();
         String qualifier = "";
         String takes = "";
@@ -97,11 +102,53 @@ public class Move {
         }
 
         final Board next = new Board(board, this);
-        if (next.withTurnsFlipped().isInCheck()) {
+        if (next.isInCheck()) {
             check = "+";
 
             if (next.isInCheckmate()) {
                 check = "#";
+            }
+        }
+
+        if (p.getClass() != Pawn.class) {
+            // Disambiguate file
+            boolean disambiguateFile = false;
+            for (char f = 'a'; f <= 'h'; f++) {
+                Square s = new Square(from.getRank(), new File(f));
+                if (!s.equals(from)) {
+                    Piece o = board.getPiece(s);
+                    if (o != null) {
+                        if (o.getClass() == p.getClass()) {
+                            if (board.getLegality(new Move(board, s, to)).isLegal()) {
+                                disambiguateFile = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (disambiguateFile) {
+                qualifier = from.getFile().toString();
+            } else {
+                // Disambiguate rank
+                boolean disambiguateRank = false;
+                for (int r = 1; r <= 8; r++) {
+                    Square s = new Square(new Rank(r), from.getFile());
+                    if (!s.equals(from)) {
+                        Piece o = board.getPiece(s);
+                        if (o != null) {
+                            if (o.getClass() == p.getClass()) {
+                                if (board.getLegality(new Move(board, s, to)).isLegal()) {
+                                    disambiguateRank = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (disambiguateRank) {
+                    qualifier = from.getRank().toString();
+                }
             }
         }
 

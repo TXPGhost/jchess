@@ -38,7 +38,7 @@ public class ChessGame {
         final MoveLegality legality = current.getLegality(move);
         if (legality.isLegal()) {
             if (index != getNumBoards() - 1) {
-                boards = new ArrayList<>(boards.subList(0, index));
+                boards = new ArrayList<>(boards.subList(0, index + 1));
             }
             boards.add(new Board(current, move));
             return true;

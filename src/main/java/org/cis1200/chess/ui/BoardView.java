@@ -79,7 +79,7 @@ public class BoardView extends JPanel {
                     if (selected != null && current.getPiece(selected) != null
                             && !movingTo.equals(selected)) {
                         final Move move = new Move(current, selected, movingTo);
-                        if (game.playMove(move)) {
+                        if (game.playMoveAtIndex(move, viewIndex)) {
                             viewIndex++;
 
                             for (final MoveListener listener : moveListeners) {

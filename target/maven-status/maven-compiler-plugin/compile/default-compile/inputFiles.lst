@@ -23,11 +23,14 @@
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/piece/PieceColor.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/tictactoe/GameBoard.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/piece/Pawn.java
+/home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/ui/HelpMenu.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/mushroom/Square.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/mushroom/Circle.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/tictactoe/TicTacToe.java
+/home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/ui/SidePanel.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/mushroom/GameCourt.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/MoveLegality.java
+/home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/ui/MenuBar.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/tictactoe/RunTicTacToe.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/DeserializeMoveException.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/mushroom/GameObj.java

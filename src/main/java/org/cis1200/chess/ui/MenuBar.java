@@ -17,7 +17,7 @@ public class MenuBar extends JMenuBar {
     public final JMenu rules;
 
     public final JCheckBoxMenuItem allowEditingPast;
-    public final JCheckBoxMenuItem editClockSettings;
+    public final JMenuItem editClockSettings;
 
     public final JMenu view;
 
@@ -56,7 +56,7 @@ public class MenuBar extends JMenuBar {
         rules = new JMenu("Rules");
         {
             allowEditingPast = new JCheckBoxMenuItem("Allow editing the past");
-            editClockSettings = new JCheckBoxMenuItem("Edit clock settings . . .");
+            editClockSettings = new JMenuItem("Edit clock settings . . .");
 
             rules.add(allowEditingPast);
             rules.add(editClockSettings);
