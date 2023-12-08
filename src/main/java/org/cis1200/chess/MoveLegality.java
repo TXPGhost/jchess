@@ -13,10 +13,10 @@ public enum MoveLegality {
     InCheck(false, "You are in check."),
     WouldBeInCheck(false, "You would be in check.");
 
-    private boolean isLegal;
-    private String message;
+    private final boolean isLegal;
+    private final String message;
 
-    private MoveLegality(boolean isLegal, String message) {
+    private MoveLegality(final boolean isLegal, final String message) {
         this.isLegal = isLegal;
         this.message = message;
     }

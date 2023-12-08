@@ -42,17 +42,20 @@ public class BoardView extends JPanel {
     private int mouseX;
     private int mouseY;
 
-    private List<MoveListener> moveListeners;
+    private final List<MoveListener> moveListeners;
+    private final List<BoardFlipListener> boardFlipListeners;
 
     public BoardView() {
         game = new ChessGame();
         viewIndex = 0;
         canEditPast = false;
+
         moveListeners = new ArrayList<>();
+        boardFlipListeners = new ArrayList<>();
 
         try {
             pieceImages = new PieceImages();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
 
@@ -60,26 +63,26 @@ public class BoardView extends JPanel {
 
         addMouseListener(new MouseAdapter() {
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void mousePressed(final MouseEvent e) {
                 selected = getHoveredSquare();
                 repaint();
             }
 
             @Override
-            public void mouseReleased(MouseEvent e) {
-                Square movingTo = getHoveredSquare();
+            public void mouseReleased(final MouseEvent e) {
+                final Square movingTo = getHoveredSquare();
 
                 // Play the requested move
                 if (canEditPast || viewIndex == game.getNumBoards() - 1) {
-                    Board current = game.getBoard(viewIndex);
+                    final Board current = game.getBoard(viewIndex);
 
                     if (selected != null && current.getPiece(selected) != null
                             && !movingTo.equals(selected)) {
-                        Move move = new Move(current, selected, movingTo);
+                        final Move move = new Move(current, selected, movingTo);
                         if (game.playMove(move)) {
                             viewIndex++;
 
-                            for (MoveListener listener : moveListeners) {
+                            for (final MoveListener listener : moveListeners) {
                                 listener.movePlayed(move);
                             }
                         }
@@ -93,7 +96,7 @@ public class BoardView extends JPanel {
 
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
-            public void mouseMoved(MouseEvent e) {
+            public void mouseMoved(final MouseEvent e) {
                 mouseX = e.getX();
                 mouseY = e.getY();
 
@@ -101,7 +104,7 @@ public class BoardView extends JPanel {
             }
 
             @Override
-            public void mouseDragged(MouseEvent e) {
+            public void mouseDragged(final MouseEvent e) {
                 mouseX = e.getX();
                 mouseY = e.getY();
 
@@ -111,8 +114,8 @@ public class BoardView extends JPanel {
 
         addKeyListener(new KeyAdapter() {
             @Override
-            public void keyPressed(KeyEvent e) {
-                int key = e.getKeyCode();
+            public void keyPressed(final KeyEvent e) {
+                final int key = e.getKeyCode();
                 if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_DOWN || key == KeyEvent.VK_A
                         || key == KeyEvent.VK_S
                         || key == KeyEvent.VK_H || key == KeyEvent.VK_J) {
@@ -131,6 +134,10 @@ public class BoardView extends JPanel {
                     }
                 } else if (key == KeyEvent.VK_F) {
                     setFlipped(!getFlipped());
+
+                    for (BoardFlipListener bfl : boardFlipListeners) {
+                        bfl.boardFlipped(getFlipped());
+                    }
                 }
             }
         });
@@ -162,31 +169,31 @@ public class BoardView extends JPanel {
         viewIndex = 0;
 
         // Call back listeners
-        for (MoveListener listener : moveListeners) {
+        for (final MoveListener listener : moveListeners) {
             listener.movePlayed(null);
         }
 
         repaint();
     }
 
-    public void setGame(ChessGame game) {
+    public void setGame(final ChessGame game) {
         this.game = game;
         viewIndex = game.getNumBoards() - 1;
 
         // Call back listeners
-        for (MoveListener listener : moveListeners) {
+        for (final MoveListener listener : moveListeners) {
             listener.movePlayed(null);
         }
 
         repaint();
     }
 
-    public void setFlipped(boolean flipped) {
+    public void setFlipped(final boolean flipped) {
         this.flipped = flipped;
         repaint();
     }
 
-    public void setAutoFlipped(boolean autoFlipped) {
+    public void setAutoFlipped(final boolean autoFlipped) {
         this.autoFlipped = autoFlipped;
         repaint();
     }
@@ -217,7 +224,7 @@ public class BoardView extends JPanel {
         return canEditPast;
     }
 
-    public void setCanEditPast(boolean canEditPast) {
+    public void setCanEditPast(final boolean canEditPast) {
         this.canEditPast = canEditPast;
     }
 
@@ -234,19 +241,19 @@ public class BoardView extends JPanel {
     }
 
     @Override
-    protected void paintComponent(Graphics graphics) {
-        Graphics2D g = (Graphics2D) graphics;
+    protected void paintComponent(final Graphics graphics) {
+        final Graphics2D g = (Graphics2D) graphics;
 
-        Board current = getViewBoard();
+        final Board current = getViewBoard();
 
-        int width = getWidth() / 8 + 1;
-        int height = getHeight() / 8 + 1;
+        final int width = getWidth() / 8 + 1;
+        final int height = getHeight() / 8 + 1;
 
         for (int r = 1; r <= 8; r++) {
             for (char f = 'a'; f <= 'h'; f++) {
-                Rank rank = new Rank(r);
-                File file = new File(f);
-                Square s = new Square(rank, file);
+                final Rank rank = new Rank(r);
+                final File file = new File(f);
+                final Square s = new Square(rank, file);
 
                 int x, y;
                 if (getFlipped()) {
@@ -265,20 +272,19 @@ public class BoardView extends JPanel {
                 g.fillRect(x, y, width, height);
 
                 if (!s.equals(selected)) {
-                    Piece p = current.getPiece(s);
+                    final Piece p = current.getPiece(s);
                     if (p != null) {
-                        BufferedImage b = pieceImages.getImage(p);
+                        final BufferedImage b = pieceImages.getImage(p);
                         g.drawImage(b, x, y, width, height, null);
                     }
 
                     if (selected != null) {
-                        Piece sel = current.getPiece(selected);
+                        final Piece sel = current.getPiece(selected);
 
                         if (sel != null) {
-                            MoveLegality legality = current
+                            final MoveLegality legality = current
                                     .getLegality(
-                                            new Move(current, selected, new Square(rank, file))
-                                    );
+                                            new Move(current, selected, new Square(rank, file)));
                             if (legality == MoveLegality.Legal) {
                                 g.drawImage(pieceImages.MOVE_DOT, x, y, width, height, null);
                             }
@@ -292,19 +298,27 @@ public class BoardView extends JPanel {
         if (selected != null)
 
         {
-            Piece p = current.getPiece(selected);
+            final Piece p = current.getPiece(selected);
             if (p != null) {
-                BufferedImage b = pieceImages.getImage(p);
+                final BufferedImage b = pieceImages.getImage(p);
                 g.drawImage(b, mouseX - width / 2, mouseY - width / 2, width, height, null);
             }
         }
     }
 
-    public void addMoveListener(MoveListener listener) {
+    public void addMoveListener(final MoveListener listener) {
         moveListeners.add(listener);
+    }
+
+    public void addBoardFlipListener(final BoardFlipListener listener) {
+        boardFlipListeners.add(listener);
     }
 
     public static interface MoveListener {
         public void movePlayed(Move move);
+    }
+
+    public static interface BoardFlipListener {
+        public void boardFlipped(boolean isFlipped);
     }
 }

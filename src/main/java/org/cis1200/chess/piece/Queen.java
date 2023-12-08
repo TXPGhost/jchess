@@ -6,18 +6,18 @@ import org.cis1200.chess.MoveLegality;
 import org.cis1200.chess.Square;
 
 public class Queen extends Piece {
-    public Queen(PieceColor color) {
+    public Queen(final PieceColor color) {
         super(color);
     }
 
     @Override
-    public MoveLegality getLegality(Move move) {
-        Board board = move.getBoard();
-        Square from = move.getFrom();
-        Square to = move.getTo();
+    public MoveLegality getLegality(final Move move) {
+        final Board board = move.getBoard();
+        final Square from = move.getFrom();
+        final Square to = move.getTo();
 
-        int rankDiff = to.getRank().getIndex() - from.getRank().getIndex();
-        int fileDiff = to.getFile().getIndex() - from.getFile().getIndex();
+        final int rankDiff = to.getRank().getIndex() - from.getRank().getIndex();
+        final int fileDiff = to.getFile().getIndex() - from.getFile().getIndex();
 
         try {
             if (rankDiff > 0 && fileDiff == 0) {
@@ -97,7 +97,7 @@ public class Queen extends Piece {
             }
 
             return MoveLegality.InaccessibleSquare;
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             return MoveLegality.InaccessibleSquare;
         }
     }

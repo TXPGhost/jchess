@@ -7,18 +7,18 @@ import org.cis1200.chess.MoveLegality;
 import org.cis1200.chess.Square;
 
 public class King extends Piece {
-    public King(PieceColor color) {
+    public King(final PieceColor color) {
         super(color);
     }
 
     @Override
-    public MoveLegality getLegality(Move move) {
-        Board board = move.getBoard();
-        Square from = move.getFrom();
-        Square to = move.getTo();
+    public MoveLegality getLegality(final Move move) {
+        final Board board = move.getBoard();
+        final Square from = move.getFrom();
+        final Square to = move.getTo();
 
-        int rankDiff = Math.abs(to.getRank().getIndex() - from.getRank().getIndex());
-        int fileDiff = Math.abs(to.getFile().getIndex() - from.getFile().getIndex());
+        final int rankDiff = Math.abs(to.getRank().getIndex() - from.getRank().getIndex());
+        final int fileDiff = Math.abs(to.getFile().getIndex() - from.getFile().getIndex());
 
         if (rankDiff == 0 && fileDiff == 0) {
             return MoveLegality.InaccessibleSquare;
@@ -28,8 +28,8 @@ public class King extends Piece {
 
         // Check for castling
         if (fileDiff == 2 && rankDiff == 0) {
-            int signedFileDiff = to.getFile().getIndex() - from.getFile().getIndex();
-            CastlingRestrictions restrictions = board.getCastlingRestrictions();
+            final int signedFileDiff = to.getFile().getIndex() - from.getFile().getIndex();
+            final CastlingRestrictions restrictions = board.getCastlingRestrictions();
 
             if (signedFileDiff == 2) {
                 if (move.getPieceColor() == PieceColor.White

@@ -1,10 +1,10 @@
 package org.cis1200.chess;
 
 public class Square {
-    private Rank rank;
-    private File file;
+    private final Rank rank;
+    private final File file;
 
-    public Square(Rank rank, File file) {
+    public Square(final Rank rank, final File file) {
         this.rank = rank;
         this.file = file;
     }
@@ -13,7 +13,7 @@ public class Square {
      * Constructs a new square from algebraic notation. For example, "e4" would
      * correspond to rank E and file 4.
      */
-    public Square(String notation) {
+    public Square(final String notation) {
         if (notation.length() != 2) {
             throw new IllegalArgumentException("notation must be a string of length 2");
         }
@@ -21,7 +21,7 @@ public class Square {
         this.file = new File(notation.charAt(0));
     }
 
-    public Square offsetBy(int rankOffset, int fileOffset) {
+    public Square offsetBy(final int rankOffset, final int fileOffset) {
         return new Square(rank.offsetBy(rankOffset), file.offsetBy(fileOffset));
     }
 
@@ -34,7 +34,7 @@ public class Square {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == null) {
             return false;
         } else if (this == o) {

@@ -7,18 +7,18 @@ import org.cis1200.chess.Rank;
 import org.cis1200.chess.Square;
 
 public class Pawn extends Piece {
-    public Pawn(PieceColor color) {
+    public Pawn(final PieceColor color) {
         super(color);
     }
 
     @Override
-    public MoveLegality getLegality(Move move) {
-        Board board = move.getBoard();
-        Square from = move.getFrom();
-        Square to = move.getTo();
+    public MoveLegality getLegality(final Move move) {
+        final Board board = move.getBoard();
+        final Square from = move.getFrom();
+        final Square to = move.getTo();
 
-        int fileDiff = Math.abs(from.getFile().getIndex() - to.getFile().getIndex());
-        int rankDiff = to.getRank().getIndex() - from.getRank().getIndex();
+        final int fileDiff = Math.abs(from.getFile().getIndex() - to.getFile().getIndex());
+        final int rankDiff = to.getRank().getIndex() - from.getRank().getIndex();
 
         try {
             // Check white moves
@@ -28,7 +28,7 @@ public class Pawn extends Piece {
                     if (board.getPieceExists(to)) {
                         return MoveLegality.Legal;
                     } else {
-                        Move lastMove = board.getLastMove();
+                        final Move lastMove = board.getLastMove();
                         if (from.getRank().equals(new Rank(5))
                                 && lastMove != null && lastMove.getPiece().getClass() == Pawn.class
                                 && lastMove.getFrom().getRank().equals(new Rank(7))
@@ -65,7 +65,7 @@ public class Pawn extends Piece {
                     if (board.getPieceExists(to)) {
                         return MoveLegality.Legal;
                     } else {
-                        Move lastMove = board.getLastMove();
+                        final Move lastMove = board.getLastMove();
                         if (from.getRank().equals(new Rank(4))
                                 && lastMove != null && lastMove.getPiece().getClass() == Pawn.class
                                 && lastMove.getFrom().getRank().equals(new Rank(2))
@@ -97,7 +97,7 @@ public class Pawn extends Piece {
 
             // Otherwise, the move is illegal
             return MoveLegality.InaccessibleSquare;
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             // If we get here, the pawn is trying to move off the board
             return MoveLegality.InaccessibleSquare;
         }

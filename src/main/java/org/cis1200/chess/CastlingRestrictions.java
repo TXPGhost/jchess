@@ -18,17 +18,17 @@ public class CastlingRestrictions {
         blackQueenSide = true;
     }
 
-    public CastlingRestrictions(CastlingRestrictions original) {
+    public CastlingRestrictions(final CastlingRestrictions original) {
         whiteKingSide = original.whiteKingSide;
         whiteQueenSide = original.whiteQueenSide;
         blackKingSide = original.blackKingSide;
         blackQueenSide = original.blackQueenSide;
     }
 
-    public CastlingRestrictions(CastlingRestrictions original, Move move) {
+    public CastlingRestrictions(final CastlingRestrictions original, final Move move) {
         this(original);
 
-        Piece piece = move.getPiece();
+        final Piece piece = move.getPiece();
         if (piece.getClass() == King.class) {
             if (piece.getColor() == PieceColor.White) {
                 this.whiteKingSide = false;

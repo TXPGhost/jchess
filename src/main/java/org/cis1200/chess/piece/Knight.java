@@ -6,18 +6,18 @@ import org.cis1200.chess.MoveLegality;
 import org.cis1200.chess.Square;
 
 public class Knight extends Piece {
-    public Knight(PieceColor color) {
+    public Knight(final PieceColor color) {
         super(color);
     }
 
     @Override
-    public MoveLegality getLegality(Move move) {
-        Board board = move.getBoard();
-        Square from = move.getFrom();
-        Square to = move.getTo();
+    public MoveLegality getLegality(final Move move) {
+        final Board board = move.getBoard();
+        final Square from = move.getFrom();
+        final Square to = move.getTo();
 
-        int rankDiff = Math.abs(to.getRank().getIndex() - from.getRank().getIndex());
-        int fileDiff = Math.abs(from.getFile().getIndex() - to.getFile().getIndex());
+        final int rankDiff = Math.abs(to.getRank().getIndex() - from.getRank().getIndex());
+        final int fileDiff = Math.abs(from.getFile().getIndex() - to.getFile().getIndex());
 
         if ((rankDiff == 1 && fileDiff == 2) || (rankDiff == 2 && fileDiff == 1)) {
             return MoveLegality.Legal;

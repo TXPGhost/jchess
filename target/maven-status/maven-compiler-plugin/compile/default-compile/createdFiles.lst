@@ -3,6 +3,7 @@ org/cis1200/mushroom/Direction.class
 org/cis1200/tictactoe/TicTacToe.class
 org/cis1200/chess/piece/PieceImages$1.class
 org/cis1200/chess/CastleSide.class
+org/cis1200/chess/ui/RunChess$13.class
 org/cis1200/chess/ui/BoardView.class
 org/cis1200/mushroom/GameObj.class
 org/cis1200/tictactoe/RunTicTacToe.class
@@ -26,11 +27,14 @@ org/cis1200/chess/piece/Rook.class
 org/cis1200/chess/ui/RunChess$4.class
 org/cis1200/tictactoe/GameBoard$1.class
 org/cis1200/chess/ui/RunChess$8.class
+org/cis1200/chess/ui/HelpMenu.class
 org/cis1200/mushroom/Circle.class
 org/cis1200/chess/piece/PieceImages.class
+org/cis1200/chess/ui/MenuBar.class
 org/cis1200/chess/ui/BoardView$2.class
 org/cis1200/chess/ui/BoardView$MoveListener.class
 org/cis1200/mushroom/Poison.class
+org/cis1200/chess/ui/BoardView$BoardFlipListener.class
 org/cis1200/chess/ui/RunChess$10.class
 org/cis1200/chess/ui/RunChess$1.class
 org/cis1200/tictactoe/GameBoard.class
@@ -46,8 +50,10 @@ org/cis1200/chess/ChessGame$Result.class
 org/cis1200/chess/MoveLegality.class
 org/cis1200/chess/File.class
 org/cis1200/chess/Rank.class
+org/cis1200/chess/ui/RunChess$12.class
 org/cis1200/chess/piece/Queen.class
 org/cis1200/chess/CastlingRestrictions.class
+org/cis1200/chess/ui/SidePanel.class
 org/cis1200/mushroom/GameCourt.class
 org/cis1200/chess/ui/RunChess$3.class
 org/cis1200/chess/ui/RunChess$9.class

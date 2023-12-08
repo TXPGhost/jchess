@@ -15,7 +15,7 @@ public class ChessGame {
         return boards.get(boards.size() - 1);
     }
 
-    public Board getBoard(int index) {
+    public Board getBoard(final int index) {
         return boards.get(index);
     }
 
@@ -23,9 +23,9 @@ public class ChessGame {
         return boards.size();
     }
 
-    public boolean playMove(Move move) {
-        Board current = getCurrentBoard();
-        MoveLegality legality = current.getLegality(move);
+    public boolean playMove(final Move move) {
+        final Board current = getCurrentBoard();
+        final MoveLegality legality = current.getLegality(move);
         if (legality.isLegal()) {
             boards.add(new Board(current, move));
             return true;
@@ -33,9 +33,9 @@ public class ChessGame {
         return false;
     }
 
-    public boolean playMoveAtIndex(Move move, int index) {
-        Board current = getBoard(index);
-        MoveLegality legality = current.getLegality(move);
+    public boolean playMoveAtIndex(final Move move, final int index) {
+        final Board current = getBoard(index);
+        final MoveLegality legality = current.getLegality(move);
         if (legality.isLegal()) {
             if (index != getNumBoards() - 1) {
                 boards = new ArrayList<>(boards.subList(0, index));
@@ -47,7 +47,7 @@ public class ChessGame {
     }
 
     public Result getResult() {
-        Board current = getCurrentBoard();
+        final Board current = getCurrentBoard();
         if (current.isInCheckmate()) {
             return switch (current.getTurn()) {
                 case White -> Result.BlackWinsByCheckmate;
@@ -87,9 +87,9 @@ public class ChessGame {
         return serialized;
     }
 
-    public static ChessGame deserialize(String serialized) throws DeserializeMoveException {
-        ChessGame game = new ChessGame();
-        String[] moves = serialized.split("[\n\t]");
+    public static ChessGame deserialize(final String serialized) throws DeserializeMoveException {
+        final ChessGame game = new ChessGame();
+        final String[] moves = serialized.split("[\n\t]");
         for (String move : moves) {
             move = move.substring(move.indexOf(' ') + 1);
             game.playMove(new Move(game.getCurrentBoard(), move));

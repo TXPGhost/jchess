@@ -1,16 +1,16 @@
 package org.cis1200.chess;
 
 public class File {
-    private int index;
+    private final int index;
 
-    public File(char file) {
+    public File(final char file) {
         index = (Character.toLowerCase(file)) - 'a';
         if (index < 0 || index >= 8) {
             throw new IllegalArgumentException("rank must be between 'a' and 'f', inclusive");
         }
     }
 
-    public File offsetBy(int amount) {
+    public File offsetBy(final int amount) {
         return new File((char) (index + 'a' + amount));
     }
 
@@ -19,7 +19,7 @@ public class File {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == null) {
             return false;
         } else if (this == o) {

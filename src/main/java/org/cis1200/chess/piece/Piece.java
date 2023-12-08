@@ -4,12 +4,12 @@ import org.cis1200.chess.Move;
 import org.cis1200.chess.MoveLegality;
 
 public abstract class Piece {
-    private PieceColor color;
+    private final PieceColor color;
 
     /**
      * Creates a new piece with the given color.
      */
-    public Piece(PieceColor color) {
+    public Piece(final PieceColor color) {
         this.color = color;
     }
 

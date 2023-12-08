@@ -41,7 +41,7 @@ public class PieceImages {
         MOVE_DOT = ImageIO.read(new File("files/move_dot.png"));
     }
 
-    public BufferedImage getImage(Piece p) {
+    public BufferedImage getImage(final Piece p) {
         if (p.getClass() == Pawn.class) {
             return switch (p.getColor()) {
                 case White -> WHITE_PAWN;

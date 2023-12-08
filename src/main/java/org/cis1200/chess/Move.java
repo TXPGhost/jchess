@@ -17,7 +17,7 @@ public class Move {
     Square from;
     Square to;
 
-    public Move(Board board, Square from, Square to) {
+    public Move(final Board board, final Square from, final Square to) {
         this.board = board;
         this.from = from;
         this.to = to;
@@ -31,9 +31,9 @@ public class Move {
         }
     }
 
-    public Move(Board board, String notation) throws DeserializeMoveException {
-        Collection<Move> possibleMoves = board.getPossibleMoves();
-        for (Move move : possibleMoves) {
+    public Move(final Board board, final String notation) throws DeserializeMoveException {
+        final Collection<Move> possibleMoves = board.getPossibleMoves();
+        for (final Move move : possibleMoves) {
             System.out.println(move.toString() + " ?= " + notation);
             if (move.toString().equals(notation)) {
                 this.board = board;
@@ -67,7 +67,7 @@ public class Move {
 
     public CastleSide getCastleSide() {
         if (getPiece().getClass() == King.class) {
-            int fileDiff = to.getFile().getIndex() - from.getFile().getIndex();
+            final int fileDiff = to.getFile().getIndex() - from.getFile().getIndex();
             if (fileDiff == 2) {
                 return CastleSide.King;
             } else if (fileDiff == -2) {
@@ -80,12 +80,12 @@ public class Move {
     @Override
     public String toString() {
         // Returns the move in algebraic notation
-        Piece p = board.getPiece(from);
+        final Piece p = board.getPiece(from);
 
-        String piece = p.toString();
+        final String piece = p.toString();
         String qualifier = "";
         String takes = "";
-        String location = to.toString();
+        final String location = to.toString();
         String check = "";
 
         if (board.getPiece(to) != null) {
@@ -96,7 +96,7 @@ public class Move {
             }
         }
 
-        Board next = new Board(board, this);
+        final Board next = new Board(board, this);
         if (next.withTurnsFlipped().isInCheck()) {
             check = "+";
 

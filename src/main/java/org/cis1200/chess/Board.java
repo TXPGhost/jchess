@@ -46,7 +46,7 @@ public class Board {
     /**
      * Constructs a new board with the given initial state.
      */
-    public Board(InitialBoardState initialBoardState) {
+    public Board(final InitialBoardState initialBoardState) {
         board = new Piece[8][8];
         turn = PieceColor.White;
         castlingRestrictions = new CastlingRestrictions();
@@ -86,12 +86,12 @@ public class Board {
         board[7][7] = new Rook(PieceColor.Black);
     }
 
-    public Board(Board b, Move move) {
+    public Board(final Board b, final Move move) {
         this(InitialBoardState.Empty);
 
         for (int r = 1; r <= 8; r++) {
             for (char f = 'a'; f <= 'h'; f++) {
-                Square square = new Square(new Rank(r), new File(f));
+                final Square square = new Square(new Rank(r), new File(f));
                 if (square.equals(move.getFrom())) {
                     setPiece(square, null);
                 } else if (square.equals(move.getTo())) {
@@ -104,7 +104,7 @@ public class Board {
         }
 
         // Perform castling
-        CastleSide castleSide = move.getCastleSide();
+        final CastleSide castleSide = move.getCastleSide();
         if (castleSide == CastleSide.King && b.turn == PieceColor.White) {
             setPiece(new Square("f1"), takePiece(new Square("h1")));
         } else if (castleSide == CastleSide.Queen && b.turn == PieceColor.White) {
@@ -141,18 +141,18 @@ public class Board {
         castlingRestrictions = new CastlingRestrictions(castlingRestrictions, move);
     }
 
-    public Board(Board b) {
+    public Board(final Board b) {
         this(InitialBoardState.Empty);
 
         for (int r = 1; r <= 8; r++) {
             for (char f = 'a'; f <= 'h'; f++) {
-                Square square = new Square(new Rank(r), new File(f));
+                final Square square = new Square(new Rank(r), new File(f));
                 setPiece(square, b.getPiece(square));
             }
         }
     }
 
-    public Board(Board b, PieceColor turn) {
+    public Board(final Board b, final PieceColor turn) {
         this(b);
         this.turn = turn;
     }
@@ -161,22 +161,22 @@ public class Board {
      * Returns the piece at the given square. May be null, which corresponds to no
      * piece.
      */
-    public Piece getPiece(Square square) {
+    public Piece getPiece(final Square square) {
         return board[square.getRank().getIndex()][square.getFile().getIndex()];
     }
 
     /**
      * Sets the piece at the given location.
      */
-    public void setPiece(Square square, Piece piece) {
+    public void setPiece(final Square square, final Piece piece) {
         board[square.getRank().getIndex()][square.getFile().getIndex()] = piece;
     }
 
     /**
      * Takes the piece at the given location, returning it.
      */
-    public Piece takePiece(Square square) {
-        Piece p = getPiece(square);
+    public Piece takePiece(final Square square) {
+        final Piece p = getPiece(square);
         setPiece(square, null);
         return p;
     }
@@ -186,10 +186,10 @@ public class Board {
      * in normal chess.
      */
     public Board withTurnsFlipped() {
-        Board next = new Board(InitialBoardState.Empty);
+        final Board next = new Board(InitialBoardState.Empty);
         for (int r = 1; r <= 8; r++) {
             for (char f = 'a'; f <= 'h'; f++) {
-                Square square = new Square(new Rank(r), new File(f));
+                final Square square = new Square(new Rank(r), new File(f));
                 next.setPiece(square, getPiece(square));
             }
         }
@@ -214,8 +214,8 @@ public class Board {
     /**
      * Returns the legality of the given move, ignoring checks.
      */
-    private MoveLegality getLegalityIgnoreCheck(Move move) {
-        Piece p = getPiece(move.getFrom());
+    private MoveLegality getLegalityIgnoreCheck(final Move move) {
+        final Piece p = getPiece(move.getFrom());
 
         // Make sure the piece we are trying to move exists
         if (p == null) {
@@ -238,15 +238,15 @@ public class Board {
     /**
      * Returns the legality of the given move.
      */
-    public MoveLegality getLegality(Move move) {
-        MoveLegality legality = getLegalityIgnoreCheck(move);
+    public MoveLegality getLegality(final Move move) {
+        final MoveLegality legality = getLegalityIgnoreCheck(move);
 
         if (!legality.isLegal()) {
             return legality;
         }
 
         // Make sure the king would remain out of check
-        Board after = new Board(new Board(this, move), this.turn);
+        final Board after = new Board(new Board(this, move), this.turn);
         if (after.isInCheck()) {
             return MoveLegality.WouldBeInCheck;
         }
@@ -257,7 +257,7 @@ public class Board {
     /**
      * Returns true if there is a piece at the given square and false otherwise.
      */
-    public boolean getPieceExists(Square s) {
+    public boolean getPieceExists(final Square s) {
         return getPiece(s) != null;
     }
 
@@ -265,8 +265,8 @@ public class Board {
      * Returns the color of the piece at the given square, and null if there is no
      * piece.
      */
-    public PieceColor getPieceColor(Square s) {
-        Piece p = getPiece(s);
+    public PieceColor getPieceColor(final Square s) {
+        final Piece p = getPiece(s);
         if (p == null) {
             return null;
         }
@@ -276,11 +276,11 @@ public class Board {
     /**
      * Returns the location of the king with the given color.
      */
-    public Square getKingLocation(PieceColor color) {
+    public Square getKingLocation(final PieceColor color) {
         for (int r = 1; r <= 8; r++) {
             for (char f = 'a'; f <= 'h'; f++) {
-                Square s = new Square(new Rank(r), new File(f));
-                Piece p = getPiece(s);
+                final Square s = new Square(new Rank(r), new File(f));
+                final Piece p = getPiece(s);
                 if (p != null && p.getColor() == color && p.getClass() == King.class) {
                     return s;
                 }
@@ -293,18 +293,18 @@ public class Board {
      * Returns a collection of all possible moves from this position.
      */
     public Collection<Move> getPossibleMoves() {
-        Collection<Move> possibleMoves = new ArrayList<>();
+        final Collection<Move> possibleMoves = new ArrayList<>();
         for (int rFrom = 1; rFrom <= 8; rFrom++) {
             for (char fFrom = 'a'; fFrom <= 'h'; fFrom++) {
-                Square from = new Square(new Rank(rFrom), new File(fFrom));
+                final Square from = new Square(new Rank(rFrom), new File(fFrom));
                 if (!turn.equals(getPieceColor(from))) {
                     continue;
                 }
                 for (int rTo = 1; rTo <= 8; rTo++) {
                     for (char fTo = 'a'; fTo <= 'h'; fTo++) {
-                        Square to = new Square(new Rank(rTo), new File(fTo));
+                        final Square to = new Square(new Rank(rTo), new File(fTo));
 
-                        Move move = new Move(this, from, to);
+                        final Move move = new Move(this, from, to);
 
                         if (getLegality(move).isLegal()) {
                             possibleMoves.add(move);
@@ -320,17 +320,17 @@ public class Board {
      * Returns true if the player whose turn it is is in check.
      */
     public boolean isInCheck() {
-        Square king = getKingLocation(turn);
+        final Square king = getKingLocation(turn);
         if (king == null) {
             return false;
         }
 
-        Board flipped = new Board(this, turn.opposite());
+        final Board flipped = new Board(this, turn.opposite());
         for (int r = 1; r <= 8; r++) {
             for (char f = 'a'; f <= 'h'; f++) {
-                Square attacker = new Square(new Rank(r), new File(f));
+                final Square attacker = new Square(new Rank(r), new File(f));
                 if (getPieceColor(attacker) == turn.opposite()) {
-                    MoveLegality attackerLegality = flipped.getLegalityIgnoreCheck(
+                    final MoveLegality attackerLegality = flipped.getLegalityIgnoreCheck(
                             new Move(this, attacker, king));
                     if (attackerLegality == MoveLegality.Legal) {
                         return true;
@@ -346,8 +346,8 @@ public class Board {
      * Returns true if the player whose turn it is is in checkmate.
      */
     public boolean isInCheckmate() {
-        for (Move possibleMove : getPossibleMoves()) {
-            MoveLegality legality = getLegality(possibleMove);
+        for (final Move possibleMove : getPossibleMoves()) {
+            final MoveLegality legality = getLegality(possibleMove);
             if (legality == MoveLegality.Legal) {
                 if (!new Board(this, possibleMove).isInCheck()) {
                     return false;
@@ -377,12 +377,12 @@ public class Board {
      * Returns the material value for the given player based on standard piece point
      * values.
      */
-    public int countMaterial(PieceColor color) {
+    public int countMaterial(final PieceColor color) {
         int material = 0;
         for (int r = 1; r <= 8; r++) {
             for (char f = 'a'; f <= 'h'; f++) {
-                Square s = new Square(new Rank(r), new File(f));
-                Piece p = getPiece(s);
+                final Square s = new Square(new Rank(r), new File(f));
+                final Piece p = getPiece(s);
                 if (p != null && p.getColor() == color) {
                     material += p.getPointValue();
                 }
