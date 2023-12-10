@@ -30,7 +30,6 @@ public class Move {
     public Move(final Board board, final String notation) throws DeserializeMoveException {
         final Collection<Move> possibleMoves = board.getPossibleMoves();
         for (final Move move : possibleMoves) {
-            System.out.println(move.toString() + " ?= " + notation);
             if (move.toString().equals(notation)) {
                 this.board = board;
                 from = move.getFrom();
@@ -38,7 +37,7 @@ public class Move {
                 return;
             }
         }
-        throw new DeserializeMoveException();
+        throw new DeserializeMoveException("move notation was unable to be decoded");
     }
 
     public Square getFrom() {
@@ -110,44 +109,17 @@ public class Move {
             }
         }
 
+        // Disambiguate moves
         if (p.getClass() != Pawn.class) {
-            // Disambiguate file
-            boolean disambiguateFile = false;
-            for (char f = 'a'; f <= 'h'; f++) {
-                Square s = new Square(from.getRank(), new File(f));
-                if (!s.equals(from)) {
-                    Piece o = board.getPiece(s);
-                    if (o != null) {
-                        if (o.getClass() == p.getClass()) {
-                            if (board.getLegality(new Move(board, s, to)).isLegal()) {
-                                disambiguateFile = true;
-                                break;
-                            }
+            for (Move other : board.getPossibleMoves()) {
+                if (other.getPiece().getClass() == p.getClass()) {
+                    if (to.equals(other.to) && !from.equals(other.from)) {
+                        if (from.getFile().equals(other.from.getFile())) {
+                            qualifier = from.getRank().toString();
+                        } else {
+                            qualifier = from.getFile().toString();
                         }
                     }
-                }
-            }
-            if (disambiguateFile) {
-                qualifier = from.getFile().toString();
-            } else {
-                // Disambiguate rank
-                boolean disambiguateRank = false;
-                for (int r = 1; r <= 8; r++) {
-                    Square s = new Square(new Rank(r), from.getFile());
-                    if (!s.equals(from)) {
-                        Piece o = board.getPiece(s);
-                        if (o != null) {
-                            if (o.getClass() == p.getClass()) {
-                                if (board.getLegality(new Move(board, s, to)).isLegal()) {
-                                    disambiguateRank = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                if (disambiguateRank) {
-                    qualifier = from.getRank().toString();
                 }
             }
         }
