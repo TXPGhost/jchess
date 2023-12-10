@@ -3,12 +3,29 @@ package org.cis1200.chess;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cis1200.chess.piece.PieceColor;
+
 public class ChessGame {
     private List<Board> boards;
 
-    public ChessGame() {
+    private long lastMoveTime;
+
+    private long whiteClock;
+    private long blackClock;
+
+    private long whiteIncrement;
+    private long blackIncrement;
+
+    public ChessGame(final long whiteTime, final long whiteIncrement, final long blackTime, final long blackIncrement) {
         boards = new ArrayList<>();
         boards.add(new Board());
+
+        lastMoveTime = System.currentTimeMillis();
+
+        whiteClock = whiteTime;
+        blackClock = blackTime;
+        this.whiteIncrement = whiteIncrement;
+        this.blackIncrement = blackIncrement;
     }
 
     public Board getCurrentBoard() {
@@ -23,10 +40,43 @@ public class ChessGame {
         return boards.size();
     }
 
+    public long getWhiteClock() {
+        if (getResult() == Result.Undecided && getCurrentBoard().getTurn() == PieceColor.White) {
+            return whiteClock - (System.currentTimeMillis() - lastMoveTime);
+        } else {
+            return whiteClock;
+        }
+    }
+
+    public long getBlackClock() {
+        if (getResult() == Result.Undecided && getCurrentBoard().getTurn() == PieceColor.Black) {
+            return blackClock - (System.currentTimeMillis() - lastMoveTime);
+        } else {
+            return blackClock;
+        }
+    }
+
+    public void setWhiteClock(int whiteClock) {
+        this.whiteClock = whiteClock;
+    }
+
+    public void setBlackClock(int blackClock) {
+        this.blackClock = blackClock;
+    }
+
     public boolean playMove(final Move move) {
         final Board current = getCurrentBoard();
         final MoveLegality legality = current.getLegality(move);
         if (legality.isLegal()) {
+            if (getResult() == Result.Undecided && getCurrentBoard().getTurn() == PieceColor.White) {
+                whiteClock += whiteIncrement;
+                whiteClock -= (System.currentTimeMillis() - lastMoveTime);
+                lastMoveTime = System.currentTimeMillis();
+            } else if (getResult() == Result.Undecided) {
+                blackClock += blackIncrement;
+                blackClock -= (System.currentTimeMillis() - lastMoveTime);
+                lastMoveTime = System.currentTimeMillis();
+            }
             boards.add(new Board(current, move));
             return true;
         }
@@ -34,9 +84,19 @@ public class ChessGame {
     }
 
     public boolean playMoveAtIndex(final Move move, final int index) {
+        System.out.println(index);
         final Board current = getBoard(index);
         final MoveLegality legality = current.getLegality(move);
         if (legality.isLegal()) {
+            if (getResult() == Result.Undecided && getCurrentBoard().getTurn() == PieceColor.White) {
+                whiteClock += whiteIncrement;
+                whiteClock -= (System.currentTimeMillis() - lastMoveTime);
+                lastMoveTime = System.currentTimeMillis();
+            } else if (getResult() == Result.Undecided) {
+                blackClock += blackIncrement;
+                blackClock -= (System.currentTimeMillis() - lastMoveTime);
+                lastMoveTime = System.currentTimeMillis();
+            }
             if (index != getNumBoards() - 1) {
                 boards = new ArrayList<>(boards.subList(0, index + 1));
             }
@@ -47,6 +107,13 @@ public class ChessGame {
     }
 
     public Result getResult() {
+        if (whiteClock < 0) {
+            return Result.BlackWinsOnTime;
+        }
+        if (blackClock < 0) {
+            return Result.WhiteWinsOnTime;
+        }
+
         final Board current = getCurrentBoard();
         if (current.isInCheckmate()) {
             return switch (current.getTurn()) {
@@ -76,7 +143,7 @@ public class ChessGame {
     }
 
     public String serialize() {
-        String serialized = "";
+        String serialized = "White Clock:\t" + getWhiteClock() + "\nBlack Clock:\t" + getBlackClock() + "\n";
         for (int i = 1; i < boards.size(); i++) {
             if (i % 2 == 1) {
                 serialized += ((i + 1) / 2) + ". " + boards.get(i).getLastMove();
@@ -87,13 +154,37 @@ public class ChessGame {
         return serialized;
     }
 
-    public static ChessGame deserialize(final String serialized) throws DeserializeMoveException {
-        final ChessGame game = new ChessGame();
+    public static ChessGame deserialize(String serialized) throws DeserializeMoveException {
+        String whiteClockStr, blackClockStr;
+        try {
+            serialized = serialized.substring(serialized.indexOf('\t') + 1);
+            whiteClockStr = serialized.substring(0, serialized.indexOf('\n'));
+            serialized = serialized.substring(serialized.indexOf('\t') + 1);
+            blackClockStr = serialized.substring(0, serialized.indexOf('\n'));
+            serialized = serialized.substring(serialized.indexOf('\n') + 1);
+        } catch (Exception e) {
+            throw new DeserializeMoveException("unable to read clock information from file");
+        }
+
+        int whiteClock, blackClock;
+        try {
+            whiteClock = Integer.parseInt(whiteClockStr);
+            blackClock = Integer.parseInt(blackClockStr);
+        } catch (Exception e) {
+            throw new DeserializeMoveException("clock time was not an integer");
+        }
+
+        final ChessGame game = new ChessGame(Long.MAX_VALUE, 0, Long.MAX_VALUE, 0);
         final String[] moves = serialized.split("[\n\t]");
         for (String move : moves) {
+            if (move.equals("")) {
+                continue;
+            }
             move = move.substring(move.indexOf(' ') + 1);
             game.playMove(new Move(game.getCurrentBoard(), move));
         }
+        game.whiteClock = whiteClock;
+        game.blackClock = blackClock;
         return game;
     }
 
@@ -103,5 +194,7 @@ public class ChessGame {
         BlackWinsByCheckmate,
         DrawByStalemate,
         DrawByRepetition,
+        WhiteWinsOnTime,
+        BlackWinsOnTime,
     }
 }

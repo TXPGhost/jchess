@@ -11,9 +11,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.cis1200.chess.ChessGame;
@@ -28,17 +31,22 @@ public class RunChess implements Runnable {
         frame.setLayout(new BorderLayout());
 
         // Initialize the sub-components
-        final BoardView boardView = new BoardView();
         final HelpMenu helpMenu = new HelpMenu();
         final MenuBar menuBar = new MenuBar();
         final SidePanel sidePanel = new SidePanel();
+        final ClockSettings clockSettings = new ClockSettings();
+        final BoardView boardView = new BoardView(clockSettings.getWhiteTime(), clockSettings.getWhiteIncrement(),
+                clockSettings.getBlackTime(), clockSettings.getBlackIncrement());
+
+        sidePanel.updateMoveIndicator(boardView.getGame().getResult(), boardView.getCurrentBoard().getTurn());
 
         // Add action listeners
         {
             menuBar.newGame.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(final ActionEvent e) {
-                    boardView.reset();
+                    boardView.reset(clockSettings.getWhiteTime(), clockSettings.getWhiteIncrement(),
+                            clockSettings.getBlackTime(), clockSettings.getBlackIncrement());
                 }
             });
             menuBar.goBackMove.addActionListener(new ActionListener() {
@@ -90,6 +98,13 @@ public class RunChess implements Runnable {
                                 .equals(".chess")) {
                             file = new File(fileName + ".chess");
                         }
+                        if (file.exists()) {
+                            int answer = JOptionPane.showConfirmDialog(frame,
+                                    "File already exists, would you like to overwrite it?");
+                            if (answer != JOptionPane.YES_OPTION) {
+                                return;
+                            }
+                        }
                         try {
                             final FileWriter writer = new FileWriter(file);
                             writer.write(boardView.getGame().serialize());
@@ -123,6 +138,18 @@ public class RunChess implements Runnable {
                     menuBar.autoFlipBoard.setState(false);
                 }
             });
+            menuBar.showBoardCoordinates.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(final ActionEvent e) {
+                    boardView.setShowCoordinates(menuBar.showBoardCoordinates.getState());
+                }
+            });
+            menuBar.editClockSettings.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(final ActionEvent e) {
+                    clockSettings.setVisible(true);
+                }
+            });
             menuBar.showHelp.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(final ActionEvent e) {
@@ -144,24 +171,30 @@ public class RunChess implements Runnable {
 
                     final ChessGame.Result result = boardView.getGame().getResult();
 
-                    if (result == ChessGame.Result.Undecided) {
-                        sidePanel.moveIndicator.setText(switch (boardView.getCurrentBoard().getTurn()) {
-                            case White -> "White";
-                            case Black -> "Black";
-                        } + " to move.");
-                    } else {
-                        sidePanel.moveIndicator.setText(switch (result) {
-                            case WhiteWinsByCheckmate -> "White wins by checkmate.";
-                            case BlackWinsByCheckmate -> "Black wins by checkmate.";
-                            case DrawByRepetition -> "Draw by repetition.";
-                            case DrawByStalemate -> "Draw by stalemate.";
-                            case Undecided -> throw new IllegalStateException();
-                        });
-                    }
+                    sidePanel.updateMoveIndicator(result, boardView.getCurrentBoard().getTurn());
 
                     menuBar.flipBoard.setState(boardView.getFlipped());
+
+                    // Update clocks
+                    sidePanel.updateWhiteClock(boardView.getGame().getWhiteClock());
+                    sidePanel.updateBlackClock(boardView.getGame().getBlackClock());
                 }
             });
+
+            clockSettings.confirm.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    clockSettings.setVisible(false);
+                }
+            });
+
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    sidePanel.updateWhiteClock(boardView.getGame().getWhiteClock());
+                    sidePanel.updateBlackClock(boardView.getGame().getBlackClock());
+                }
+            }, 0, 1);
         }
 
         // Add the sub-compoonents to the main game frame

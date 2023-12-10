@@ -33,6 +33,7 @@ public class BoardView extends JPanel {
 
     private boolean flipped;
     private boolean autoFlipped;
+    private boolean showCoordinates;
 
     private ChessGame game;
     private int viewIndex;
@@ -45,10 +46,11 @@ public class BoardView extends JPanel {
     private final List<MoveListener> moveListeners;
     private final List<BoardFlipListener> boardFlipListeners;
 
-    public BoardView() {
-        game = new ChessGame();
+    public BoardView(long whiteTime, long whiteIncrement, long blackTime, long blackIncrement) {
+        game = new ChessGame(whiteTime, whiteIncrement, blackTime, blackIncrement);
         viewIndex = 0;
         canEditPast = false;
+        showCoordinates = true;
 
         moveListeners = new ArrayList<>();
         boardFlipListeners = new ArrayList<>();
@@ -164,8 +166,8 @@ public class BoardView extends JPanel {
         repaint();
     }
 
-    public void reset() {
-        game = new ChessGame();
+    public void reset(long whiteTime, long whiteIncrement, long blackTime, long blackIncrement) {
+        game = new ChessGame(whiteTime, whiteIncrement, blackTime, blackIncrement);
         viewIndex = 0;
 
         // Call back listeners
@@ -204,6 +206,15 @@ public class BoardView extends JPanel {
         }
 
         return flipped;
+    }
+
+    public void setShowCoordinates(boolean showCoordinates) {
+        this.showCoordinates = showCoordinates;
+        repaint();
+    }
+
+    public boolean getShowCoordinates() {
+        return showCoordinates;
     }
 
     private Square getHoveredSquare() {
@@ -246,8 +257,11 @@ public class BoardView extends JPanel {
 
         final Board current = getViewBoard();
 
-        final int width = getWidth() / 8 + 1;
-        final int height = getHeight() / 8 + 1;
+        final int width = getWidth() / 8;
+        final int height = getHeight() / 8;
+
+        g.setColor(SQUARE_LIGHT);
+        g.fillRect(0, 0, getWidth(), getHeight());
 
         for (int r = 1; r <= 8; r++) {
             for (char f = 'a'; f <= 'h'; f++) {
@@ -269,7 +283,14 @@ public class BoardView extends JPanel {
                 } else {
                     g.setColor(SQUARE_LIGHT);
                 }
-                g.fillRect(x, y, width, height);
+
+                // Fill in the missing pixel at the board edges
+                int extraWidth = !getFlipped() ? (file.equals(new File('h')) ? 1 : 0)
+                        : (file.equals(new File('a')) ? 1 : 0);
+                int extraHeight = !getFlipped() ? (rank.equals(new Rank(1)) ? 1 : 0)
+                        : (rank.equals(new Rank(8)) ? 1 : 0);
+
+                g.fillRect(x, y, width + extraWidth, height + extraHeight);
 
                 if (!s.equals(selected)) {
                     final Piece p = current.getPiece(s);
@@ -290,7 +311,22 @@ public class BoardView extends JPanel {
                             }
                         }
                     }
+                }
 
+                if (showCoordinates) {
+                    if ((rank.getIndex() + file.getIndex()) % 2 == 0) {
+                        g.setColor(SQUARE_LIGHT);
+                    } else {
+                        g.setColor(SQUARE_DARK);
+                    }
+                    if ((!getFlipped() && s.getRank().equals(new Rank(1)))
+                            || (getFlipped() && s.getRank().equals(new Rank(8)))) {
+                        g.drawString(s.getFile().toString(), x + 5, y + getHeight() / 8 - 5);
+                    }
+                    if ((!getFlipped() && s.getFile().equals(new File('h')))
+                            || (getFlipped() && s.getFile().equals(new File('a')))) {
+                        g.drawString(s.getRank().toString().toUpperCase(), x + getWidth() / 8 - 10, y + 18);
+                    }
                 }
             }
         }
