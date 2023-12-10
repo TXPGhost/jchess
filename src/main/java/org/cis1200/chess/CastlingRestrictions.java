@@ -1,9 +1,5 @@
 package org.cis1200.chess;
 
-import org.cis1200.chess.piece.King;
-import org.cis1200.chess.piece.Piece;
-import org.cis1200.chess.piece.PieceColor;
-
 public class CastlingRestrictions {
     private boolean whiteKingSide;
     private boolean whiteQueenSide;

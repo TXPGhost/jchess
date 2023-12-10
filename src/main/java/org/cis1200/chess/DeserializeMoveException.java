@@ -1,9 +1,9 @@
 package org.cis1200.chess;
 
 public class DeserializeMoveException extends Exception {
-    private String reason;
+    private final String reason;
 
-    public DeserializeMoveException(String reason) {
+    public DeserializeMoveException(final String reason) {
         this.reason = reason;
     }
 

@@ -13,8 +13,8 @@ public class ChessGame {
     private long whiteClock;
     private long blackClock;
 
-    private long whiteIncrement;
-    private long blackIncrement;
+    private final long whiteIncrement;
+    private final long blackIncrement;
 
     public ChessGame(final long whiteTime, final long whiteIncrement, final long blackTime, final long blackIncrement) {
         boards = new ArrayList<>();
@@ -58,11 +58,11 @@ public class ChessGame {
         }
     }
 
-    public void setWhiteClock(int whiteClock) {
+    public void setWhiteClock(final int whiteClock) {
         this.whiteClock = whiteClock;
     }
 
-    public void setBlackClock(int blackClock) {
+    public void setBlackClock(final int blackClock) {
         this.blackClock = blackClock;
     }
 
@@ -163,7 +163,7 @@ public class ChessGame {
             serialized = serialized.substring(serialized.indexOf('\t') + 1);
             blackClockStr = serialized.substring(0, serialized.indexOf('\n'));
             serialized = serialized.substring(serialized.indexOf('\n') + 1);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new DeserializeMoveException("unable to read clock information from file");
         }
 
@@ -171,7 +171,7 @@ public class ChessGame {
         try {
             whiteClock = Integer.parseInt(whiteClockStr);
             blackClock = Integer.parseInt(blackClockStr);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new DeserializeMoveException("clock time was not an integer");
         }
 

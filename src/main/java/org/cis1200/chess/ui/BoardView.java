@@ -22,16 +22,14 @@ import org.cis1200.chess.Move;
 import org.cis1200.chess.MoveLegality;
 import org.cis1200.chess.Rank;
 import org.cis1200.chess.Square;
-import org.cis1200.chess.piece.Pawn;
 import org.cis1200.chess.piece.Piece;
-import org.cis1200.chess.piece.PieceColor;
 import org.cis1200.chess.piece.PieceImages;
 
 public class BoardView extends JPanel {
     private static final Color SQUARE_LIGHT = new Color(195, 163, 113);
     private static final Color SQUARE_DARK = new Color(113, 78, 47);
 
-    private PromotionMenu promotionMenu;
+    private final PromotionMenu promotionMenu;
 
     private boolean canEditPast;
 
@@ -42,7 +40,7 @@ public class BoardView extends JPanel {
     private ChessGame game;
     private int viewIndex;
 
-    private PieceImages pieceImages;
+    private final PieceImages pieceImages;
     private Square selected;
     private int mouseX;
     private int mouseY;
@@ -50,9 +48,10 @@ public class BoardView extends JPanel {
     private final List<MoveListener> moveListeners;
     private final List<BoardFlipListener> boardFlipListeners;
 
-    public BoardView(PieceImages pieceImages, PromotionMenu promotionMenu, long whiteTime, long whiteIncrement,
-            long blackTime,
-            long blackIncrement) {
+    public BoardView(PieceImages pieceImages, final PromotionMenu promotionMenu, final long whiteTime,
+            final long whiteIncrement,
+            final long blackTime,
+            final long blackIncrement) {
         game = new ChessGame(whiteTime, whiteIncrement, blackTime, blackIncrement);
         viewIndex = 0;
         canEditPast = false;
@@ -147,7 +146,7 @@ public class BoardView extends JPanel {
                 } else if (key == KeyEvent.VK_F) {
                     setFlipped(!getFlipped());
 
-                    for (BoardFlipListener bfl : boardFlipListeners) {
+                    for (final BoardFlipListener bfl : boardFlipListeners) {
                         bfl.boardFlipped(getFlipped());
                     }
                 }
@@ -176,7 +175,8 @@ public class BoardView extends JPanel {
         repaint();
     }
 
-    public void reset(long whiteTime, long whiteIncrement, long blackTime, long blackIncrement) {
+    public void reset(final long whiteTime, final long whiteIncrement, final long blackTime,
+            final long blackIncrement) {
         game = new ChessGame(whiteTime, whiteIncrement, blackTime, blackIncrement);
         viewIndex = 0;
 
@@ -218,7 +218,7 @@ public class BoardView extends JPanel {
         return flipped;
     }
 
-    public void setShowCoordinates(boolean showCoordinates) {
+    public void setShowCoordinates(final boolean showCoordinates) {
         this.showCoordinates = showCoordinates;
         repaint();
     }
@@ -295,9 +295,9 @@ public class BoardView extends JPanel {
                 }
 
                 // Fill in the missing pixel at the board edges
-                int extraWidth = !getFlipped() ? (file.equals(new File('h')) ? 1 : 0)
+                final int extraWidth = !getFlipped() ? (file.equals(new File('h')) ? 1 : 0)
                         : (file.equals(new File('a')) ? 1 : 0);
-                int extraHeight = !getFlipped() ? (rank.equals(new Rank(1)) ? 1 : 0)
+                final int extraHeight = !getFlipped() ? (rank.equals(new Rank(1)) ? 1 : 0)
                         : (rank.equals(new Rank(8)) ? 1 : 0);
 
                 g.fillRect(x, y, width + extraWidth, height + extraHeight);
