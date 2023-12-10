@@ -130,7 +130,7 @@ public class BoardView extends JPanel {
                 if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_DOWN || key == KeyEvent.VK_A
                         || key == KeyEvent.VK_S
                         || key == KeyEvent.VK_H || key == KeyEvent.VK_J) {
-                    if (e.getModifiers() == KeyEvent.SHIFT_MASK) {
+                    if (e.getModifiersEx() == KeyEvent.SHIFT_DOWN_MASK) {
                         goToStart();
                     } else {
                         goBackMove();
@@ -138,7 +138,7 @@ public class BoardView extends JPanel {
                 } else if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_UP || key == KeyEvent.VK_D
                         || key == KeyEvent.VK_W || key == KeyEvent.VK_L
                         || key == KeyEvent.VK_K) {
-                    if (e.getModifiers() == KeyEvent.SHIFT_MASK) {
+                    if (e.getModifiersEx() == KeyEvent.SHIFT_DOWN_MASK) {
                         goToEnd();
                     } else {
                         goForwardMove();

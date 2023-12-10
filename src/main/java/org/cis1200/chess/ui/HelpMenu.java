@@ -37,6 +37,7 @@ public class HelpMenu extends JFrame {
                                 <li>You can start a new game with <em>Game -> New game</em></li>
                                 <li>Go back a move with <em>Game -> Go back a move</em> (or by pressing Left, Down, H, J, A, or S)</li>
                                 <li>Go forward a move with <em>Game -> Go forward a move</em> (or by pressing Right, Up, L, K, D, or W)</li>
+                                <li>For the above two options, hold Shift in to go to the start/end of the game</li>
                                 <li>Load an existing game from a file with <em>Game -> Load game</em></li>
                                 <li>Save the current game to a file with <em>Game -> Save game</em></li>
                             </ul>
