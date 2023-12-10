@@ -50,7 +50,8 @@ public class HelpMenu extends JFrame {
                                 <li>You can adjust clock settings with <em>Rules -> Edit clock settings</em> (these changes only take effect upon starting a new game)</li>
                             </ul>
                         </html>
-                                """);
+                                """
+        );
         helpText.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         add(helpText);

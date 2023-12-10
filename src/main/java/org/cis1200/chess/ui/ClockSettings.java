@@ -33,10 +33,12 @@ public class ClockSettings extends JFrame {
         final long MINUTES = SECONDS * 60;
 
         timeStrings = new String[] { "0:30", "1:00", "3:00", "5:00", "10:00", "15:00", "30:00" };
-        timeValues = new long[] { 30 * SECONDS, 1 * MINUTES, 3 * MINUTES, 5 * MINUTES, 10 * MINUTES, 30 * MINUTES };
+        timeValues = new long[] { 30 * SECONDS, 1 * MINUTES, 3 * MINUTES, 5 * MINUTES, 10 * MINUTES,
+            30 * MINUTES };
 
         incrementStrings = new String[] { "None", "0:01", "0:02", "0:05", "0:10", "0:30" };
-        incrementValues = new long[] { 0, 1 * SECONDS, 2 * SECONDS, 5 * SECONDS, 10 * SECONDS, 30 * SECONDS };
+        incrementValues = new long[] { 0, 1 * SECONDS, 2 * SECONDS, 5 * SECONDS, 10 * SECONDS,
+            30 * SECONDS };
 
         white = new JPanel();
         black = new JPanel();

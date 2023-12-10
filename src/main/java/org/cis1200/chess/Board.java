@@ -354,7 +354,9 @@ public class Board {
             for (char f = 'a'; f <= 'h'; f++) {
                 final Square attacker = new Square(new Rank(r), new File(f));
                 if (getPieceColor(attacker) == turn.opposite()) {
-                    if (flipped.getLegalityIgnoreCheck(new Move(this, attacker, king, null)) == MoveLegality.Legal) {
+                    if (flipped.getLegalityIgnoreCheck(
+                            new Move(this, attacker, king, null)
+                    ) == MoveLegality.Legal) {
                         return true;
                     }
                 }

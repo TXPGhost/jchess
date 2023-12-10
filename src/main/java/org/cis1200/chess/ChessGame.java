@@ -16,7 +16,10 @@ public class ChessGame {
     private final long whiteIncrement;
     private final long blackIncrement;
 
-    public ChessGame(final long whiteTime, final long whiteIncrement, final long blackTime, final long blackIncrement) {
+    public ChessGame(
+            final long whiteTime, final long whiteIncrement, final long blackTime,
+            final long blackIncrement
+    ) {
         boards = new ArrayList<>();
         boards.add(new Board());
 
@@ -43,7 +46,8 @@ public class ChessGame {
     public long getWhiteClock() {
         if (boards.size() == 1) {
             return whiteClock;
-        } else if (getResult() == Result.Undecided && getCurrentBoard().getTurn() == PieceColor.White) {
+        } else if (getResult() == Result.Undecided
+                && getCurrentBoard().getTurn() == PieceColor.White) {
             return whiteClock - (System.currentTimeMillis() - lastMoveTime);
         } else {
             return whiteClock;
@@ -144,7 +148,8 @@ public class ChessGame {
     }
 
     public String serialize() {
-        String serialized = "White Clock:\t" + getWhiteClock() + "\nBlack Clock:\t" + getBlackClock() + "\n";
+        String serialized = "White Clock:\t" + getWhiteClock() + "\nBlack Clock:\t"
+                + getBlackClock() + "\n";
         for (int i = 1; i < boards.size(); i++) {
             if (i % 2 == 1) {
                 serialized += ((i + 1) / 2) + ". " + boards.get(i).getLastMove();

@@ -107,7 +107,8 @@ public class Move {
         final Piece p = board.getPiece(from);
 
         // Check for castling
-        if (p.getClass() == King.class && Math.abs(to.getFile().getIndex() - from.getFile().getIndex()) == 2) {
+        if (p.getClass() == King.class
+                && Math.abs(to.getFile().getIndex() - from.getFile().getIndex()) == 2) {
             if (to.getFile().equals(new File('g'))) {
                 return "O-O";
             } else if (to.getFile().equals(new File('c'))) {

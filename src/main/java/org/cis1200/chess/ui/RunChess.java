@@ -46,19 +46,25 @@ public class RunChess implements Runnable {
         final SidePanel sidePanel = new SidePanel();
         final ClockSettings clockSettings = new ClockSettings();
         final PromotionMenu promotionMenu = new PromotionMenu(pieceImages);
-        final BoardView boardView = new BoardView(pieceImages, promotionMenu, clockSettings.getWhiteTime(),
+        final BoardView boardView = new BoardView(
+                pieceImages, promotionMenu, clockSettings.getWhiteTime(),
                 clockSettings.getWhiteIncrement(),
-                clockSettings.getBlackTime(), clockSettings.getBlackIncrement());
+                clockSettings.getBlackTime(), clockSettings.getBlackIncrement()
+        );
 
-        sidePanel.updateMoveIndicator(boardView.getGame().getResult(), boardView.getCurrentBoard().getTurn());
+        sidePanel.updateMoveIndicator(
+                boardView.getGame().getResult(), boardView.getCurrentBoard().getTurn()
+        );
 
         // Add action listeners
         {
             menuBar.newGame.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(final ActionEvent e) {
-                    boardView.reset(clockSettings.getWhiteTime(), clockSettings.getWhiteIncrement(),
-                            clockSettings.getBlackTime(), clockSettings.getBlackIncrement());
+                    boardView.reset(
+                            clockSettings.getWhiteTime(), clockSettings.getWhiteIncrement(),
+                            clockSettings.getBlackTime(), clockSettings.getBlackIncrement()
+                    );
                 }
             });
             menuBar.setPromotionPiece.addActionListener(new ActionListener() {
@@ -93,7 +99,8 @@ public class RunChess implements Runnable {
                         }
                         try {
                             final String serialized = new String(
-                                    Files.readAllBytes(Paths.get(file.getPath())));
+                                    Files.readAllBytes(Paths.get(file.getPath()))
+                            );
                             boardView.setGame(ChessGame.deserialize(serialized));
                         } catch (final IOException e) {
                             e.printStackTrace();
@@ -117,8 +124,10 @@ public class RunChess implements Runnable {
                             file = new File(fileName + ".chess");
                         }
                         if (file.exists()) {
-                            int answer = JOptionPane.showConfirmDialog(frame,
-                                    "File already exists, would you like to overwrite it?");
+                            int answer = JOptionPane.showConfirmDialog(
+                                    frame,
+                                    "File already exists, would you like to overwrite it?"
+                            );
                             if (answer != JOptionPane.YES_OPTION) {
                                 return;
                             }
@@ -225,7 +234,8 @@ public class RunChess implements Runnable {
             @Override
             public void componentResized(final ComponentEvent e) {
                 boardView.setPreferredSize(
-                        new Dimension(boardView.getHeight(), boardView.getHeight()));
+                        new Dimension(boardView.getHeight(), boardView.getHeight())
+                );
             }
         });
 

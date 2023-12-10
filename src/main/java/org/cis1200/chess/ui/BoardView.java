@@ -48,10 +48,12 @@ public class BoardView extends JPanel {
     private final List<MoveListener> moveListeners;
     private final List<BoardFlipListener> boardFlipListeners;
 
-    public BoardView(PieceImages pieceImages, final PromotionMenu promotionMenu, final long whiteTime,
+    public BoardView(
+            PieceImages pieceImages, final PromotionMenu promotionMenu, final long whiteTime,
             final long whiteIncrement,
             final long blackTime,
-            final long blackIncrement) {
+            final long blackIncrement
+    ) {
         game = new ChessGame(whiteTime, whiteIncrement, blackTime, blackIncrement);
         viewIndex = 0;
         canEditPast = false;
@@ -88,8 +90,10 @@ public class BoardView extends JPanel {
 
                     if (selected != null && current.getPiece(selected) != null
                             && !movingTo.equals(selected)) {
-                        final Move move = new Move(current, selected, movingTo,
-                                promotionMenu.getPromotionPiece(current.getTurn()));
+                        final Move move = new Move(
+                                current, selected, movingTo,
+                                promotionMenu.getPromotionPiece(current.getTurn())
+                        );
                         if (game.playMoveAtIndex(move, viewIndex)) {
                             viewIndex++;
 
@@ -175,8 +179,10 @@ public class BoardView extends JPanel {
         repaint();
     }
 
-    public void reset(final long whiteTime, final long whiteIncrement, final long blackTime,
-            final long blackIncrement) {
+    public void reset(
+            final long whiteTime, final long whiteIncrement, final long blackTime,
+            final long blackIncrement
+    ) {
         game = new ChessGame(whiteTime, whiteIncrement, blackTime, blackIncrement);
         viewIndex = 0;
 
@@ -315,8 +321,12 @@ public class BoardView extends JPanel {
                         if (sel != null) {
                             final MoveLegality legality = current
                                     .getLegality(
-                                            new Move(current, selected, new Square(rank, file),
-                                                    promotionMenu.getPromotionPiece(current.getTurn())));
+                                            new Move(
+                                                    current, selected, new Square(rank, file),
+                                                    promotionMenu
+                                                            .getPromotionPiece(current.getTurn())
+                                            )
+                                    );
                             if (legality == MoveLegality.Legal) {
                                 g.drawImage(pieceImages.MOVE_DOT, x, y, width, height, null);
                             }
@@ -336,7 +346,10 @@ public class BoardView extends JPanel {
                     }
                     if ((!getFlipped() && s.getFile().equals(new File('h')))
                             || (getFlipped() && s.getFile().equals(new File('a')))) {
-                        g.drawString(s.getRank().toString().toUpperCase(), x + getWidth() / 8 - 10, y + 18);
+                        g.drawString(
+                                s.getRank().toString().toUpperCase(), x + getWidth() / 8 - 10,
+                                y + 18
+                        );
                     }
                 }
             }
