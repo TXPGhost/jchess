@@ -32,13 +32,13 @@ public class King extends Piece {
             final CastlingRestrictions restrictions = board.getCastlingRestrictions();
 
             if (signedFileDiff == 2) {
-                if (move.getPieceColor() == PieceColor.White
+                if (move.getFrom().equals(new Square("e1")) && move.getPieceColor() == PieceColor.White
                         && restrictions.canWhiteCastleKingSide()) {
                     if (board.getPiece(new Square("f1")) == null
                             && board.getPiece(new Square("g1")) == null) {
                         return MoveLegality.LegalCastleKingSide;
                     }
-                } else if (move.getPieceColor() == PieceColor.Black
+                } else if (move.getFrom().equals(new Square("e8")) && move.getPieceColor() == PieceColor.Black
                         && restrictions.canBlackCastleKingSide()) {
                     if (board.getPiece(new Square("f8")) == null
                             && board.getPiece(new Square("g8")) == null) {
@@ -46,14 +46,14 @@ public class King extends Piece {
                     }
                 }
             } else if (signedFileDiff == -2) {
-                if (move.getPieceColor() == PieceColor.White
+                if (move.getFrom().equals(new Square("e1")) && move.getPieceColor() == PieceColor.White
                         && restrictions.canWhiteCastleQueenSide()) {
                     if (board.getPiece(new Square("b1")) == null
                             && board.getPiece(new Square("c1")) == null
                             && board.getPiece(new Square("d1")) == null) {
                         return MoveLegality.LegalCastleKingSide;
                     }
-                } else if (move.getPieceColor() == PieceColor.Black
+                } else if (move.getFrom().equals(new Square("e8")) && move.getPieceColor() == PieceColor.Black
                         && restrictions.canBlackCastleQueenSide()) {
                     if (board.getPiece(new Square("b8")) == null
                             && board.getPiece(new Square("c8")) == null

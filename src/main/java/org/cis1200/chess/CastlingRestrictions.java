@@ -52,6 +52,19 @@ public class CastlingRestrictions {
                 }
             }
         }
+
+        if (move.getTo().equals(new Square("a8"))) {
+            this.whiteQueenSide = false;
+        }
+        if (move.getTo().equals(new Square("a1"))) {
+            this.whiteKingSide = false;
+        }
+        if (move.getTo().equals(new Square("h8"))) {
+            this.blackKingSide = false;
+        }
+        if (move.getTo().equals(new Square("h1"))) {
+            this.blackKingSide = false;
+        }
     }
 
     public boolean canWhiteCastleKingSide() {
