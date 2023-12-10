@@ -8,15 +8,18 @@ import org.cis1200.chess.piece.Piece;
 import org.cis1200.chess.piece.PieceColor;
 
 public class Move {
-    Board board;
+    private Board board;
 
-    Square from;
-    Square to;
+    private Square from;
+    private Square to;
 
-    public Move(final Board board, final Square from, final Square to) {
+    private Piece promotionPiece;
+
+    public Move(final Board board, final Square from, final Square to, final Piece promotionPiece) {
         this.board = board;
         this.from = from;
         this.to = to;
+        this.promotionPiece = promotionPiece;
 
         if (board == null) {
             throw new IllegalArgumentException("board cannot be null");
@@ -34,10 +37,32 @@ public class Move {
                 this.board = board;
                 from = move.getFrom();
                 to = move.getTo();
+                promotionPiece = move.getPromotionPiece();
                 return;
             }
         }
-        throw new DeserializeMoveException("move notation was unable to be decoded");
+        throw new DeserializeMoveException("move notation was unable to be decoded: " + notation);
+    }
+
+    public boolean isPromotion() {
+        final Piece p = board.getPiece(from);
+        if (p == null) {
+            return false;
+        }
+
+        if (p.getClass() == Pawn.class) {
+            if (p.getColor() == PieceColor.White) {
+                if (to.getRank().equals(new Rank(8))) {
+                    return true;
+                }
+            } else {
+                if (to.getRank().equals(new Rank(1))) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public Square getFrom() {
@@ -54,6 +79,10 @@ public class Move {
 
     public Piece getPiece() {
         return board.getPiece(from);
+    }
+
+    public Piece getPromotionPiece() {
+        return promotionPiece;
     }
 
     public PieceColor getPieceColor() {
@@ -91,6 +120,7 @@ public class Move {
         String takes = "";
         final String location = to.toString();
         String check = "";
+        String promotion = "";
 
         if (board.getPiece(to) != null) {
             takes = "x";
@@ -111,7 +141,7 @@ public class Move {
 
         // Disambiguate moves
         if (p.getClass() != Pawn.class) {
-            for (Move other : board.getPossibleMoves()) {
+            for (final Move other : board.getPossibleMoves()) {
                 if (other.getPiece().getClass() == p.getClass()) {
                     if (to.equals(other.to) && !from.equals(other.from)) {
                         if (from.getFile().equals(other.from.getFile())) {
@@ -124,6 +154,11 @@ public class Move {
             }
         }
 
-        return piece + qualifier + takes + location + check;
+        // Add promotion
+        if (isPromotion()) {
+            promotion += "=" + promotionPiece;
+        }
+
+        return piece + qualifier + takes + location + promotion + check;
     }
 }

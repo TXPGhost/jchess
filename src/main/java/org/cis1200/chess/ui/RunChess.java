@@ -22,6 +22,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.cis1200.chess.ChessGame;
 import org.cis1200.chess.DeserializeMoveException;
 import org.cis1200.chess.Move;
+import org.cis1200.chess.piece.PieceImages;
 import org.cis1200.chess.ui.BoardView.BoardFlipListener;
 
 public class RunChess implements Runnable {
@@ -30,12 +31,23 @@ public class RunChess implements Runnable {
         final JFrame frame = new JFrame("Chess");
         frame.setLayout(new BorderLayout());
 
+        // Load piece images
+        PieceImages pieceImages;
+        try {
+            pieceImages = new PieceImages();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
         // Initialize the sub-components
         final HelpMenu helpMenu = new HelpMenu();
         final MenuBar menuBar = new MenuBar();
         final SidePanel sidePanel = new SidePanel();
         final ClockSettings clockSettings = new ClockSettings();
-        final BoardView boardView = new BoardView(clockSettings.getWhiteTime(), clockSettings.getWhiteIncrement(),
+        final PromotionMenu promotionMenu = new PromotionMenu(pieceImages);
+        final BoardView boardView = new BoardView(pieceImages, promotionMenu, clockSettings.getWhiteTime(),
+                clockSettings.getWhiteIncrement(),
                 clockSettings.getBlackTime(), clockSettings.getBlackIncrement());
 
         sidePanel.updateMoveIndicator(boardView.getGame().getResult(), boardView.getCurrentBoard().getTurn());
@@ -47,6 +59,12 @@ public class RunChess implements Runnable {
                 public void actionPerformed(final ActionEvent e) {
                     boardView.reset(clockSettings.getWhiteTime(), clockSettings.getWhiteIncrement(),
                             clockSettings.getBlackTime(), clockSettings.getBlackIncrement());
+                }
+            });
+            menuBar.setPromotionPiece.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(final ActionEvent e) {
+                    promotionMenu.updatePromotionPiece(boardView.getViewBoard().getTurn());
                 }
             });
             menuBar.goBackMove.addActionListener(new ActionListener() {

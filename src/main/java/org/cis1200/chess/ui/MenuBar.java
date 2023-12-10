@@ -9,6 +9,7 @@ public class MenuBar extends JMenuBar {
     public final JMenu game;
 
     public final JMenuItem newGame;
+    public final JMenuItem setPromotionPiece;
     public final JMenuItem goBackMove;
     public final JMenuItem goForwardMove;
     public final JMenuItem loadGame;
@@ -36,12 +37,14 @@ public class MenuBar extends JMenuBar {
         game = new JMenu("Game");
         {
             newGame = new JMenuItem("New game");
+            setPromotionPiece = new JMenuItem("Set promotion piece");
             goBackMove = new JMenuItem("Go back a move");
             goForwardMove = new JMenuItem("Go forward a move");
             loadGame = new JMenuItem("Load game . . .");
             saveGame = new JMenuItem("Save game . . .");
 
             game.add(newGame);
+            game.add(setPromotionPiece);
             game.addSeparator();
             game.add(goBackMove);
             game.add(goForwardMove);

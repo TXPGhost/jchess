@@ -10,4 +10,11 @@ public enum PieceColor {
             case White -> PieceColor.Black;
         };
     }
+
+    public String toString() {
+        return switch (this) {
+            case White -> "white";
+            case Black -> "black";
+        };
+    }
 }

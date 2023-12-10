@@ -41,7 +41,9 @@ public class ChessGame {
     }
 
     public long getWhiteClock() {
-        if (getResult() == Result.Undecided && getCurrentBoard().getTurn() == PieceColor.White) {
+        if (boards.size() == 1) {
+            return whiteClock;
+        } else if (getResult() == Result.Undecided && getCurrentBoard().getTurn() == PieceColor.White) {
             return whiteClock - (System.currentTimeMillis() - lastMoveTime);
         } else {
             return whiteClock;
@@ -68,15 +70,15 @@ public class ChessGame {
         final Board current = getCurrentBoard();
         final MoveLegality legality = current.getLegality(move);
         if (legality.isLegal()) {
-            if (getResult() == Result.Undecided && getCurrentBoard().getTurn() == PieceColor.White) {
+            if (boards.size() != 1 && getResult() == Result.Undecided
+                    && getCurrentBoard().getTurn() == PieceColor.White) {
                 whiteClock += whiteIncrement;
                 whiteClock -= (System.currentTimeMillis() - lastMoveTime);
-                lastMoveTime = System.currentTimeMillis();
-            } else if (getResult() == Result.Undecided) {
+            } else if (boards.size() != 1 && getResult() == Result.Undecided) {
                 blackClock += blackIncrement;
                 blackClock -= (System.currentTimeMillis() - lastMoveTime);
-                lastMoveTime = System.currentTimeMillis();
             }
+            lastMoveTime = System.currentTimeMillis();
             boards.add(new Board(current, move));
             return true;
         }
@@ -84,19 +86,18 @@ public class ChessGame {
     }
 
     public boolean playMoveAtIndex(final Move move, final int index) {
-        System.out.println(index);
         final Board current = getBoard(index);
         final MoveLegality legality = current.getLegality(move);
         if (legality.isLegal()) {
-            if (getResult() == Result.Undecided && getCurrentBoard().getTurn() == PieceColor.White) {
+            if (boards.size() != 1 && getResult() == Result.Undecided
+                    && getCurrentBoard().getTurn() == PieceColor.White) {
                 whiteClock += whiteIncrement;
                 whiteClock -= (System.currentTimeMillis() - lastMoveTime);
-                lastMoveTime = System.currentTimeMillis();
-            } else if (getResult() == Result.Undecided) {
+            } else if (boards.size() != 1 && getResult() == Result.Undecided) {
                 blackClock += blackIncrement;
                 blackClock -= (System.currentTimeMillis() - lastMoveTime);
-                lastMoveTime = System.currentTimeMillis();
             }
+            lastMoveTime = System.currentTimeMillis();
             if (index != getNumBoards() - 1) {
                 boards = new ArrayList<>(boards.subList(0, index + 1));
             }

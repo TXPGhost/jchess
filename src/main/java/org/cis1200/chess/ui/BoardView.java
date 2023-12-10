@@ -22,12 +22,16 @@ import org.cis1200.chess.Move;
 import org.cis1200.chess.MoveLegality;
 import org.cis1200.chess.Rank;
 import org.cis1200.chess.Square;
+import org.cis1200.chess.piece.Pawn;
 import org.cis1200.chess.piece.Piece;
+import org.cis1200.chess.piece.PieceColor;
 import org.cis1200.chess.piece.PieceImages;
 
 public class BoardView extends JPanel {
     private static final Color SQUARE_LIGHT = new Color(195, 163, 113);
     private static final Color SQUARE_DARK = new Color(113, 78, 47);
+
+    private PromotionMenu promotionMenu;
 
     private boolean canEditPast;
 
@@ -46,11 +50,16 @@ public class BoardView extends JPanel {
     private final List<MoveListener> moveListeners;
     private final List<BoardFlipListener> boardFlipListeners;
 
-    public BoardView(long whiteTime, long whiteIncrement, long blackTime, long blackIncrement) {
+    public BoardView(PieceImages pieceImages, PromotionMenu promotionMenu, long whiteTime, long whiteIncrement,
+            long blackTime,
+            long blackIncrement) {
         game = new ChessGame(whiteTime, whiteIncrement, blackTime, blackIncrement);
         viewIndex = 0;
         canEditPast = false;
         showCoordinates = true;
+
+        this.pieceImages = pieceImages;
+        this.promotionMenu = promotionMenu;
 
         moveListeners = new ArrayList<>();
         boardFlipListeners = new ArrayList<>();
@@ -80,7 +89,8 @@ public class BoardView extends JPanel {
 
                     if (selected != null && current.getPiece(selected) != null
                             && !movingTo.equals(selected)) {
-                        final Move move = new Move(current, selected, movingTo);
+                        final Move move = new Move(current, selected, movingTo,
+                                promotionMenu.getPromotionPiece(current.getTurn()));
                         if (game.playMoveAtIndex(move, viewIndex)) {
                             viewIndex++;
 
@@ -305,7 +315,8 @@ public class BoardView extends JPanel {
                         if (sel != null) {
                             final MoveLegality legality = current
                                     .getLegality(
-                                            new Move(current, selected, new Square(rank, file)));
+                                            new Move(current, selected, new Square(rank, file),
+                                                    promotionMenu.getPromotionPiece(current.getTurn())));
                             if (legality == MoveLegality.Legal) {
                                 g.drawImage(pieceImages.MOVE_DOT, x, y, width, height, null);
                             }

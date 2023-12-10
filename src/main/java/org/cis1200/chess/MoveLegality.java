@@ -11,7 +11,8 @@ public enum MoveLegality {
     SameSideCapture(false, "Cannot capture your own piece."),
     InaccessibleSquare(false, "This square is inaccessible."),
     InCheck(false, "You are in check."),
-    WouldBeInCheck(false, "You would be in check.");
+    WouldBeInCheck(false, "You would be in check."),
+    MustPromote(false, "Must choose a piece to promote to.");
 
     private final boolean isLegal;
     private final String message;

@@ -125,10 +125,10 @@ public class Board {
         if (move.getPiece().getClass() == Pawn.class) {
             if (move.getPieceColor().equals(PieceColor.White)
                     && move.getTo().getRank().equals(new Rank(8))) {
-                setPiece(move.getTo(), new Queen(PieceColor.White));
+                setPiece(move.getTo(), move.getPromotionPiece());
             } else if (move.getPieceColor().equals(PieceColor.Black)
                     && move.getTo().getRank().equals(new Rank(1))) {
-                setPiece(move.getTo(), new Queen(PieceColor.Black));
+                setPiece(move.getTo(), move.getPromotionPiece());
             }
         }
 
@@ -217,6 +217,11 @@ public class Board {
     private MoveLegality getLegalityIgnoreCheck(final Move move) {
         final Piece p = getPiece(move.getFrom());
 
+        // Make sure the piece is promoting
+        if (move.isPromotion() && move.getPromotionPiece() == null) {
+            return MoveLegality.MustPromote;
+        }
+
         // Make sure the piece we are trying to move exists
         if (p == null) {
             return MoveLegality.NoSuchPiece;
@@ -304,10 +309,29 @@ public class Board {
                     for (char fTo = 'a'; fTo <= 'h'; fTo++) {
                         final Square to = new Square(new Rank(rTo), new File(fTo));
 
-                        final Move move = new Move(this, from, to);
+                        final Move move = new Move(this, from, to, null);
+                        if (move.isPromotion()) {
+                            final Move moveQ = new Move(this, from, to, new Queen(turn));
+                            final Move moveK = new Move(this, from, to, new Knight(turn));
+                            final Move moveR = new Move(this, from, to, new Rook(turn));
+                            final Move moveB = new Move(this, from, to, new Bishop(turn));
 
-                        if (getLegality(move).isLegal()) {
-                            possibleMoves.add(move);
+                            if (getLegality(moveQ).isLegal()) {
+                                possibleMoves.add(moveQ);
+                            }
+                            if (getLegality(moveK).isLegal()) {
+                                possibleMoves.add(moveK);
+                            }
+                            if (getLegality(moveR).isLegal()) {
+                                possibleMoves.add(moveR);
+                            }
+                            if (getLegality(moveB).isLegal()) {
+                                possibleMoves.add(moveB);
+                            }
+                        } else {
+                            if (getLegality(move).isLegal()) {
+                                possibleMoves.add(move);
+                            }
                         }
                     }
                 }
@@ -330,9 +354,7 @@ public class Board {
             for (char f = 'a'; f <= 'h'; f++) {
                 final Square attacker = new Square(new Rank(r), new File(f));
                 if (getPieceColor(attacker) == turn.opposite()) {
-                    final MoveLegality attackerLegality = flipped.getLegalityIgnoreCheck(
-                            new Move(this, attacker, king));
-                    if (attackerLegality == MoveLegality.Legal) {
+                    if (flipped.getLegalityIgnoreCheck(new Move(this, attacker, king, null)) == MoveLegality.Legal) {
                         return true;
                     }
                 }

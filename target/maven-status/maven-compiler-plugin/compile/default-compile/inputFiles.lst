@@ -23,6 +23,7 @@
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/File.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/piece/PieceColor.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/tictactoe/GameBoard.java
+/home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/ui/PromotionMenu.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/piece/Pawn.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/ui/HelpMenu.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/mushroom/Square.java

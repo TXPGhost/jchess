@@ -40,6 +40,7 @@ public class SidePanel extends JPanel {
 
         clockPanel = new JPanel();
         clockPanel.setLayout(new GridBagLayout());
+        clockPanel.setBackground(Color.BLACK);
         {
             clockWhite = new JLabel("10:00", JLabel.CENTER);
             clockBlack = new JLabel("10:00", JLabel.CENTER);
