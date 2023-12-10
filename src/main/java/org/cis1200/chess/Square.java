@@ -11,7 +11,7 @@ public class Square {
 
     /**
      * Constructs a new square from algebraic notation. For example, "e4" would
-     * correspond to rank E and file 4.
+     * correspond to rank e and file 4.
      */
     public Square(final String notation) {
         if (notation.length() != 2) {
