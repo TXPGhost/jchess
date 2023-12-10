@@ -23,7 +23,6 @@ public class MenuBar extends JMenuBar {
 
     public final JCheckBoxMenuItem flipBoard;
     public final JCheckBoxMenuItem autoFlipBoard;
-    public final JCheckBoxMenuItem showNotation;
     public final JCheckBoxMenuItem showBoardCoordinates;
 
     public final JMenu help;
@@ -59,6 +58,7 @@ public class MenuBar extends JMenuBar {
             editClockSettings = new JMenuItem("Edit clock settings . . .");
 
             rules.add(allowEditingPast);
+            rules.addSeparator();
             rules.add(editClockSettings);
         }
         add(rules);
@@ -68,13 +68,12 @@ public class MenuBar extends JMenuBar {
         {
             flipBoard = new JCheckBoxMenuItem("Flip board");
             autoFlipBoard = new JCheckBoxMenuItem("Automatically flip board");
-            showNotation = new JCheckBoxMenuItem("Show notation");
             showBoardCoordinates = new JCheckBoxMenuItem("Show board coordinates");
+            showBoardCoordinates.setState(true);
 
             view.add(flipBoard);
             view.add(autoFlipBoard);
             view.addSeparator();
-            view.add(showNotation);
             view.add(showBoardCoordinates);
         }
         add(view);
