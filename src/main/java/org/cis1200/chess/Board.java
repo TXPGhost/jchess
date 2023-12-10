@@ -138,7 +138,7 @@ public class Board {
         };
 
         lastMove = move;
-        castlingRestrictions = new CastlingRestrictions(castlingRestrictions, move);
+        castlingRestrictions = new CastlingRestrictions(b.castlingRestrictions, move);
     }
 
     public Board(final Board b) {

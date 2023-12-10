@@ -3,7 +3,6 @@ package org.cis1200.chess;
 import org.cis1200.chess.piece.King;
 import org.cis1200.chess.piece.Piece;
 import org.cis1200.chess.piece.PieceColor;
-import org.cis1200.chess.piece.Rook;
 
 public class CastlingRestrictions {
     private boolean whiteKingSide;
@@ -28,42 +27,28 @@ public class CastlingRestrictions {
     public CastlingRestrictions(final CastlingRestrictions original, final Move move) {
         this(original);
 
-        final Piece piece = move.getPiece();
-        if (piece.getClass() == King.class) {
-            if (piece.getColor() == PieceColor.White) {
-                this.whiteKingSide = false;
-                this.whiteQueenSide = false;
-            } else {
-                this.blackKingSide = false;
-                this.blackQueenSide = false;
-            }
-        } else if (piece.getClass() == Rook.class) {
-            if (piece.getColor() == PieceColor.White) {
-                if (move.from == new Square("h1")) {
-                    this.whiteKingSide = false;
-                } else if (move.from == new Square("a1")) {
-                    this.whiteQueenSide = false;
-                }
-            } else {
-                if (move.from == new Square("h8")) {
-                    this.blackKingSide = false;
-                } else if (move.from == new Square("a8")) {
-                    this.blackQueenSide = false;
-                }
-            }
+        // Prevent castling if the king moves
+        if (move.getFrom().equals(new Square("e1"))) {
+            whiteKingSide = false;
+            whiteQueenSide = false;
+        }
+        if (move.getFrom().equals(new Square("e8"))) {
+            blackKingSide = false;
+            blackQueenSide = false;
         }
 
-        if (move.getTo().equals(new Square("a8"))) {
-            this.whiteQueenSide = false;
+        // Prevent castling if the rook moves or is captured
+        if (move.getFrom().equals(new Square("a8")) || move.getTo().equals(new Square("a8"))) {
+            whiteKingSide = false;
         }
-        if (move.getTo().equals(new Square("a1"))) {
-            this.whiteKingSide = false;
+        if (move.getFrom().equals(new Square("a1")) || move.getTo().equals(new Square("a1"))) {
+            whiteQueenSide = false;
         }
-        if (move.getTo().equals(new Square("h8"))) {
-            this.blackKingSide = false;
+        if (move.getFrom().equals(new Square("h8")) || move.getTo().equals(new Square("h8"))) {
+            blackKingSide = false;
         }
-        if (move.getTo().equals(new Square("h1"))) {
-            this.blackKingSide = false;
+        if (move.getFrom().equals(new Square("h1")) || move.getTo().equals(new Square("h1"))) {
+            blackQueenSide = false;
         }
     }
 
