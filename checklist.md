@@ -3,7 +3,7 @@
 - [x] Display chess board
 - [x] Turn indicator
 - [x] Notation
-- [ ] Clock
+- [x] Clock
 - [x] Force square board size
 
 # Gameplay
@@ -12,20 +12,20 @@
 - [x] Cycle back/forth beteween moves
 - [x] Show possible moves
 - [x] Allow editing past
-- [ ] New game, settings, etc.
-- [ ] Checkmate
+- [x] New game, settings, etc.
+- [x] Checkmate
 - [ ] Stalemate
 - [ ] 3 move repetition
 - [ ] 50 move rule
 
 # File IO
 
-- [ ] Save game to notation
-- [ ] Load game from notation
+- [x] Save game to notation
+- [x] Load game from notation
 
 # Movement Rules
 
-- [ ] Pawn
+- [x] Pawn
   - [x] Basic movement
   - [x] Cannot same side capture
   - [x] Blocked by pawn ahead
@@ -33,7 +33,7 @@
   - [x] Capturing
   - [x] En passant
   - [x] Promotion
-    - [ ] Promotion choice
+    - [x] Promotion choice
 - [x] Knight
   - [x] Basic movement
   - [x] Cannot same side capture
@@ -57,6 +57,6 @@
   - [x] Must get out of check
   - [ ] Castling
     - [ ] Cannot castle in check
-    - [ ] Cannot castle after rook has moved
+    - [x] Cannot castle after rook has moved
     - [x] Cannot castle after check
     - [ ] Cannot castle through check

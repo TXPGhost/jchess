@@ -22,6 +22,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.cis1200.chess.ChessGame;
 import org.cis1200.chess.DeserializeMoveException;
 import org.cis1200.chess.Move;
+import org.cis1200.chess.Result;
 import org.cis1200.chess.piece.PieceImages;
 import org.cis1200.chess.ui.BoardView.BoardFlipListener;
 
@@ -196,7 +197,7 @@ public class RunChess implements Runnable {
                 public void movePlayed(final Move move) {
                     sidePanel.moves.setText(boardView.getGame().toString());
 
-                    final ChessGame.Result result = boardView.getGame().getResult();
+                    final Result result = boardView.getGame().getResult();
 
                     sidePanel.updateMoveIndicator(result, boardView.getCurrentBoard().getTurn());
 

@@ -370,17 +370,14 @@ public class Board {
      * Returns true if the player whose turn it is is in checkmate.
      */
     public boolean isInCheckmate() {
-        for (final Move possibleMove : getPossibleMoves()) {
-            final MoveLegality legality = getLegality(possibleMove);
-            if (legality == MoveLegality.Legal) {
-                if (!new Board(this, possibleMove).isInCheck()) {
-                    return false;
-                }
-            }
+        return getPossibleMoves().isEmpty() && isInCheck();
+    }
 
-        }
-
-        return true;
+    /**
+     * Returns true if the player whose turn it is is in stalemate.
+     */
+    public boolean isInStalemate() {
+        return getPossibleMoves().isEmpty() && !isInCheck();
     }
 
     /**

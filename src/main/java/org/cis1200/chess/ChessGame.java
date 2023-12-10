@@ -112,6 +112,7 @@ public class ChessGame {
     }
 
     public Result getResult() {
+        // Check for game ending on time
         if (whiteClock < 0) {
             return Result.BlackWinsOnTime;
         }
@@ -120,12 +121,20 @@ public class ChessGame {
         }
 
         final Board current = getCurrentBoard();
+
+        // Check for checkmate
         if (current.isInCheckmate()) {
             return switch (current.getTurn()) {
                 case White -> Result.BlackWinsByCheckmate;
                 case Black -> Result.WhiteWinsByCheckmate;
             };
         }
+
+        // Check for stalemate
+        if (current.isInStalemate()) {
+            return Result.DrawByStalemate;
+        }
+
         return Result.Undecided;
     }
 
@@ -192,15 +201,5 @@ public class ChessGame {
         game.whiteClock = whiteClock;
         game.blackClock = blackClock;
         return game;
-    }
-
-    public static enum Result {
-        Undecided,
-        WhiteWinsByCheckmate,
-        BlackWinsByCheckmate,
-        DrawByStalemate,
-        DrawByRepetition,
-        WhiteWinsOnTime,
-        BlackWinsOnTime,
     }
 }

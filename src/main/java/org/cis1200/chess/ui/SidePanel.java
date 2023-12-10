@@ -11,8 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import org.cis1200.chess.ChessGame;
-import org.cis1200.chess.ChessGame.Result;
+import org.cis1200.chess.Result;
 import org.cis1200.chess.piece.PieceColor;
 
 public class SidePanel extends JPanel {
@@ -116,7 +115,7 @@ public class SidePanel extends JPanel {
     }
 
     public void updateMoveIndicator(Result result, PieceColor turn) {
-        if (result == ChessGame.Result.Undecided) {
+        if (result == Result.Undecided) {
             moveIndicator.setText(switch (turn) {
                 case White -> "White";
                 case Black -> "Black";
@@ -130,15 +129,7 @@ public class SidePanel extends JPanel {
                 case Black -> Color.WHITE;
             });
         } else {
-            moveIndicator.setText(switch (result) {
-                case WhiteWinsByCheckmate -> "White wins by checkmate.";
-                case BlackWinsByCheckmate -> "Black wins by checkmate.";
-                case WhiteWinsOnTime -> "White wins on time.";
-                case BlackWinsOnTime -> "Black wins on time.";
-                case DrawByRepetition -> "Draw by repetition.";
-                case DrawByStalemate -> "Draw by stalemate.";
-                case Undecided -> throw new IllegalStateException();
-            });
+            moveIndicator.setText(result.toString());
         }
     }
 }
