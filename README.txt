@@ -19,6 +19,7 @@ PennKey: xanrob_
   encapsulated by the `Board` class, and the indices used are `Square` objects
   which have a corresponding `Rank` and `File`.
 
+
   2. File I/O
 
   The game stores moves in short algebraic chess notation (i.e. `e4`, `Ke2`),
@@ -27,7 +28,10 @@ PennKey: xanrob_
   user in the form of an error dialog. The file also stores the time remaining
   on each player's clock, and everything else about the game state (check,
   etc.) is recreated by reading the move sequence. The sequence of moves is
-  also validaded to make sure they correspond to legal moves.
+  also validaded to make sure they correspond to legal moves. I was advised
+  against implementing this because chess itself is a difficult game, but I
+  ended up managing to do it anyway.
+
 
   3. Inheritance and Subtyping
 
@@ -38,6 +42,7 @@ PennKey: xanrob_
   this, `Piece` provides shared color functionality and a default constructor,
   because this behavior is shared across all pieces, and also provides a shared
   override implementation of `equals`.
+
 
   4. Complex Game Logic
 
@@ -163,7 +168,7 @@ PennKey: xanrob_
     to identify squares on the board and is used to index into the 2D array.
     It also overrides `equals` because this class is used a lot in comparisons.
 
-  `Rank.java` and `File.java`
+  `{Rank.java, File.java}`
 
     These classes correspond to ranks and files on the chess board,
     respectively. Together, they comprise a `Square`, but they are also useful
@@ -227,8 +232,7 @@ PennKey: xanrob_
     `getLegality`, which takes in a move and returns its legality, and
     `getPointValue`, which returns the standard point value of the given piece.
 
-  `piece/Pawn.java` and `piece/Knight.java` and `piece/Bishop.java` and
-  `piece/Rook.java` and `piece/Queen.java` and `piece/King.java`
+  `piece/{Pawn.java, Knight.java, Bishop.java, Rook.java, Queen.java, King.java}`
 
     These classes all extend `Piece` and override `getLegality` to perform
     all the checks necessary to see if a move is legal. Also override `toString`
@@ -253,11 +257,31 @@ PennKey: xanrob_
 - Were there any significant stumbling blocks while you were implementing your
   game (related to your design, or otherwise)?
 
+  Overall I was able to stick to my design relatively closely and I only
+  encountered minor issues throughout the implementation. One change was that
+  I ended up switching out the JUnit testable component for complex game logic.
+  One issue I had was with implementing promotion, since the user needs to
+  choose which piece to promote to, but this would interrupt the natural flow
+  of the game. Giving the user a pop-up right away and waiting for a response
+  would hae required refactoring most of my code, so I decided to go for the
+  simpler option and have them choose ahead of time.
 
 
 
 - Evaluate your design. Is there a good separation of functionality? How well is
   private state encapsulated? What would you refactor, if given the chance?
+
+  I did a decent job encapsulating behavior for certain aspects, especially the
+  Board, Pieces, Squares, Ranks, and Files. However, due to the complex nature
+  of chess, my code inevitably became messier as I added more edge-case rules,
+  to the point where now a lot of the functionality is scattered between
+  different classes. It would have been very hard to predict exactly how this
+  would evolve ahead of time. Another result of this was that I ended up looking
+  one or two moves ahead to implement many behaviors (such as check, etc.),
+  which is very slow. If I had the ability to refactor in the future, I would
+  hard-code these rules instead of looking ahead and I would also allow moves
+  to be "unplayed" in addition to being played, opening up the possiblility for
+  an engine AI opponent.
 
 
 
