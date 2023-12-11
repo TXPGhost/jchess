@@ -2,6 +2,7 @@ package org.cis1200.chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.cis1200.chess.piece.Bishop;
 import org.cis1200.chess.piece.King;
@@ -158,6 +159,13 @@ public class Board {
     }
 
     /**
+     * Returns a 2d array of the squares in the board
+     */
+    public Piece[][] getSquares() {
+        return board;
+    }
+
+    /**
      * Returns the piece at the given square. May be null, which corresponds to no
      * piece.
      */
@@ -256,6 +264,13 @@ public class Board {
             return MoveLegality.WouldBeInCheck;
         }
 
+        // Make sure the king does not castle in check
+        if (Math.abs(move.getFrom().getFile().getIndex() - move.getTo().getFile().getIndex()) == 2) {
+            if (isInCheck()) {
+                return MoveLegality.CastlingInCheck;
+            }
+        }
+
         return MoveLegality.Legal;
     }
 
@@ -295,14 +310,25 @@ public class Board {
     }
 
     /**
-     * Returns a collection of all possible moves from this position.
+     * Returns a collection of all possible non-king moves from this position.
      */
     public Collection<Move> getPossibleMoves() {
+        return getPossibleMovesWithBlacklist(Collections.emptyList());
+    }
+
+    /**
+     * Returns a collection of all possible moves from this position with a
+     * blacklist of piece types.
+     */
+    public Collection<Move> getPossibleMovesWithBlacklist(Collection<Class<? extends Piece>> blacklist) {
         final Collection<Move> possibleMoves = new ArrayList<>();
         for (int rFrom = 1; rFrom <= 8; rFrom++) {
             for (char fFrom = 'a'; fFrom <= 'h'; fFrom++) {
                 final Square from = new Square(new Rank(rFrom), new File(fFrom));
                 if (!turn.equals(getPieceColor(from))) {
+                    continue;
+                }
+                if (blacklist.contains(getPiece(from).getClass())) {
                     continue;
                 }
                 for (int rTo = 1; rTo <= 8; rTo++) {
@@ -355,8 +381,7 @@ public class Board {
                 final Square attacker = new Square(new Rank(r), new File(f));
                 if (getPieceColor(attacker) == turn.opposite()) {
                     if (flipped.getLegalityIgnoreCheck(
-                            new Move(this, attacker, king, null)
-                    ) == MoveLegality.Legal) {
+                            new Move(this, attacker, king, null)) == MoveLegality.Legal) {
                         return true;
                     }
                 }
@@ -424,5 +449,32 @@ public class Board {
             };
         }
         return countMaterial(PieceColor.White) - countMaterial(PieceColor.Black);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        } else if (this == o) {
+            return true;
+        } else if (this.getClass() != o.getClass()) {
+            return false;
+        } else {
+            for (int r = 1; r <= 8; r++) {
+                for (char f = 'a'; f <= 'h'; f++) {
+                    Square s = new Square(new Rank(r), new File(f));
+                    Piece a = getPiece(s);
+                    Piece b = ((Board) o).getPiece(s);
+                    if (a == null && b == null) {
+                        continue;
+                    } else if ((a == null && b != null) || (a != null && b == null)) {
+                        return false;
+                    } else if (!getPiece(s).equals(((Board) o).getPiece(s))) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
     }
 }

@@ -14,7 +14,7 @@
 - [x] Allow editing past
 - [x] New game, settings, etc.
 - [x] Checkmate
-- [ ] Stalemate
+- [x] Stalemate
 - [ ] 3 move repetition
 - [ ] 50 move rule
 
@@ -49,14 +49,14 @@
   - [x] Basic movement
   - [x] Cannot same side capture
   - [x] Blocked by other pieces
-- [ ] King
+- [x] King
   - [x] Basic movement
   - [x] Cannot same side capture
   - [ ] Blocked by other pieces
   - [x] Cannot move into check
   - [x] Must get out of check
-  - [ ] Castling
-    - [ ] Cannot castle in check
+  - [x] Castling
+    - [x] Cannot castle in check
     - [x] Cannot castle after rook has moved
-    - [x] Cannot castle after check
-    - [ ] Cannot castle through check
+    - [x] Cannot castle after king has moved
+    - [x] Cannot castle through check

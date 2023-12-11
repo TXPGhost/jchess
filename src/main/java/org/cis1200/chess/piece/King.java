@@ -1,5 +1,7 @@
 package org.cis1200.chess.piece;
 
+import java.util.Collections;
+
 import org.cis1200.chess.Board;
 import org.cis1200.chess.CastlingRestrictions;
 import org.cis1200.chess.Move;
@@ -9,6 +11,15 @@ import org.cis1200.chess.Square;
 public class King extends Piece {
     public King(final PieceColor color) {
         super(color);
+    }
+
+    private static boolean isSquareAttacked(final Board board, final Square square) {
+        for (Move move : board.getPossibleMovesWithBlacklist(Collections.singleton(King.class))) {
+            if (move.getTo().equals(square)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -37,6 +48,9 @@ public class King extends Piece {
                         && restrictions.canWhiteCastleKingSide()) {
                     if (board.getPiece(new Square("f1")) == null
                             && board.getPiece(new Square("g1")) == null) {
+                        if (isSquareAttacked(new Board(move.getBoard()), new Square("f1"))) {
+                            return MoveLegality.CastlingThroughAttackedSquare;
+                        }
                         return MoveLegality.LegalCastleKingSide;
                     }
                 } else if (move.getFrom().equals(new Square("e8"))
@@ -44,6 +58,9 @@ public class King extends Piece {
                         && restrictions.canBlackCastleKingSide()) {
                     if (board.getPiece(new Square("f8")) == null
                             && board.getPiece(new Square("g8")) == null) {
+                        if (isSquareAttacked(new Board(move.getBoard()), new Square("f8"))) {
+                            return MoveLegality.CastlingThroughAttackedSquare;
+                        }
                         return MoveLegality.LegalCastleKingSide;
                     }
                 }
@@ -54,6 +71,9 @@ public class King extends Piece {
                     if (board.getPiece(new Square("b1")) == null
                             && board.getPiece(new Square("c1")) == null
                             && board.getPiece(new Square("d1")) == null) {
+                        if (isSquareAttacked(new Board(move.getBoard()), new Square("d1"))) {
+                            return MoveLegality.CastlingThroughAttackedSquare;
+                        }
                         return MoveLegality.LegalCastleKingSide;
                     }
                 } else if (move.getFrom().equals(new Square("e8"))
@@ -62,6 +82,9 @@ public class King extends Piece {
                     if (board.getPiece(new Square("b8")) == null
                             && board.getPiece(new Square("c8")) == null
                             && board.getPiece(new Square("d8")) == null) {
+                        if (isSquareAttacked(new Board(move.getBoard()), new Square("d8"))) {
+                            return MoveLegality.CastlingThroughAttackedSquare;
+                        }
                         return MoveLegality.LegalCastleKingSide;
                     }
                 }

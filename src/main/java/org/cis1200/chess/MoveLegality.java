@@ -12,7 +12,9 @@ public enum MoveLegality {
     InaccessibleSquare(false, "This square is inaccessible."),
     InCheck(false, "You are in check."),
     WouldBeInCheck(false, "You would be in check."),
-    MustPromote(false, "Must choose a piece to promote to.");
+    MustPromote(false, "Must choose a piece to promote to."),
+    CastlingInCheck(false, "You cannot castle while in check."),
+    CastlingThroughAttackedSquare(false, "You cannot castle through a square that is being attacked.");
 
     private final boolean isLegal;
     private final String message;

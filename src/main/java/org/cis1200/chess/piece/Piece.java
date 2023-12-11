@@ -33,4 +33,17 @@ public abstract class Piece {
      * Returns the standard point value of the given piece.
      */
     public abstract int getPointValue();
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        } else if (this == o) {
+            return true;
+        } else if (this.getClass() != o.getClass()) {
+            return false;
+        } else {
+            return getColor() == ((Piece) o).getColor();
+        }
+    }
 }

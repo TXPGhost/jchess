@@ -1,7 +1,11 @@
 package org.cis1200.chess;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.cis1200.chess.piece.PieceColor;
 
@@ -18,10 +22,11 @@ public class ChessGame {
 
     public ChessGame(
             final long whiteTime, final long whiteIncrement, final long blackTime,
-            final long blackIncrement
-    ) {
+            final long blackIncrement) {
+        final Board first = new Board();
+
         boards = new ArrayList<>();
-        boards.add(new Board());
+        boards.add(first);
 
         lastMoveTime = System.currentTimeMillis();
 
@@ -133,6 +138,13 @@ public class ChessGame {
         // Check for stalemate
         if (current.isInStalemate()) {
             return Result.DrawByStalemate;
+        }
+
+        // Check for threefold repetition
+        for (Board board : boards) {
+            if (Collections.frequency(boards, board) >= 3) {
+                return Result.DrawByRepetition;
+            }
         }
 
         return Result.Undecided;
