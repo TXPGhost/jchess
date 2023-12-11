@@ -15,17 +15,17 @@ public class CompilationTest {
     @Test
 
     public void testMain() {
-        String error = ("Error: Your submission must include a class called " +
+        final String error = ("Error: Your submission must include a class called " +
                 "\"Game\" in package \"org.cis1200\" with a main method:\n" +
                 "   public static void main(String[] args)");
 
-        Class<Game> gameClass = Game.class;
+        final Class<Game> gameClass = Game.class;
 
         try {
-            Class[] mainArgs = new Class[1];
+            final Class[] mainArgs = new Class[1];
             mainArgs[0] = (String[].class);
 
-            Method gameMain = gameClass.getMethod("main", mainArgs);
+            final Method gameMain = gameClass.getMethod("main", mainArgs);
 
             if (!gameMain.getReturnType().toString().equals("void")) {
                 System.out.println(
@@ -35,16 +35,16 @@ public class CompilationTest {
                 fail("The Game class's main method should have return type void.");
             }
 
-            int modifiers = gameMain.getModifiers();
+            final int modifiers = gameMain.getModifiers();
 
             if (!Modifier.isStatic(modifiers)) {
                 System.out.println(error + "The main method should be static.");
                 fail("The Game class's main method should be static.");
             }
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             System.out.println(error + "\nBut there was no main method or it had the wrong type.");
             fail(error + "\nBut there was no main method or it had the wrong type.");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.out.println(
                     "Exception encountered while checking your Game class, please email the TAs."
             );
