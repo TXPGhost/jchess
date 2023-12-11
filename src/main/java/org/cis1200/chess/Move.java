@@ -44,6 +44,10 @@ public class Move {
         throw new DeserializeMoveException("move notation was unable to be decoded: " + notation);
     }
 
+    public boolean isCapture() {
+        return board.getPiece(to) != null;
+    }
+
     public boolean isPromotion() {
         final Piece p = board.getPiece(from);
         if (p == null) {

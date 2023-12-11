@@ -6,6 +6,7 @@ public enum Result {
     BlackWinsByCheckmate,
     DrawByStalemate,
     DrawByRepetition,
+    DrawByFiftyMoveRule,
     WhiteWinsOnTime,
     BlackWinsOnTime;
 
@@ -17,6 +18,7 @@ public enum Result {
             case BlackWinsOnTime -> "Black wins on time.";
             case DrawByRepetition -> "Draw by repetition.";
             case DrawByStalemate -> "Draw by stalemate.";
+            case DrawByFiftyMoveRule -> "Draw by fifty move rule.";
             case Undecided -> "Currently undecided.";
         };
     }

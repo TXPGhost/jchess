@@ -2,15 +2,15 @@ package org.cis1200.chess;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
+import org.cis1200.chess.piece.Pawn;
 import org.cis1200.chess.piece.PieceColor;
 
 public class ChessGame {
     private List<Board> boards;
+
+    private int fiftyMoveRuleCountdown;
 
     private long lastMoveTime;
 
@@ -27,6 +27,8 @@ public class ChessGame {
 
         boards = new ArrayList<>();
         boards.add(first);
+
+        fiftyMoveRuleCountdown = 50;
 
         lastMoveTime = System.currentTimeMillis();
 
@@ -89,6 +91,11 @@ public class ChessGame {
             }
             lastMoveTime = System.currentTimeMillis();
             boards.add(new Board(current, move));
+            if (move.isCapture() || move.getPiece().getClass() == Pawn.class) {
+                fiftyMoveRuleCountdown = 50;
+            } else {
+                fiftyMoveRuleCountdown--;
+            }
             return true;
         }
         return false;
@@ -111,6 +118,11 @@ public class ChessGame {
                 boards = new ArrayList<>(boards.subList(0, index + 1));
             }
             boards.add(new Board(current, move));
+            if (move.isCapture() || move.getPiece().getClass() == Pawn.class) {
+                fiftyMoveRuleCountdown = 50;
+            } else {
+                fiftyMoveRuleCountdown--;
+            }
             return true;
         }
         return false;
@@ -142,9 +154,14 @@ public class ChessGame {
 
         // Check for threefold repetition
         for (Board board : boards) {
-            if (Collections.frequency(boards, board) >= 3) {
+            if (boards.stream().filter(b -> b.equals(board)).count() >= 3) {
                 return Result.DrawByRepetition;
             }
+        }
+
+        // Check for fifty move rule
+        if (fiftyMoveRuleCountdown <= 0) {
+            return Result.DrawByFiftyMoveRule;
         }
 
         return Result.Undecided;
