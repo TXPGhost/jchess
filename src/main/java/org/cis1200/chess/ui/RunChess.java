@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -104,8 +105,22 @@ public class RunChess implements Runnable {
                             );
                             boardView.setGame(ChessGame.deserialize(serialized));
                         } catch (final IOException e) {
+                            JOptionPane.showMessageDialog(
+                                    frame, "Unable to read game file. (" + e + ")", "Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                            e.printStackTrace();
+                        } catch (final InvalidPathException e) {
+                            JOptionPane.showMessageDialog(
+                                    frame, "Invalid file path. (" + e + ")", "Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
                             e.printStackTrace();
                         } catch (final DeserializeMoveException e) {
+                            JOptionPane.showMessageDialog(
+                                    frame, "Unable to parse game file. (" + e + ")", "Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
                             e.printStackTrace();
                         }
                     }
