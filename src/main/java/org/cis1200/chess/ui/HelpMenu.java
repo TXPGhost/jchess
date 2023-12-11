@@ -14,7 +14,24 @@ public class HelpMenu extends JFrame {
         helpText.setText(
                 """
                         <html>
-                            <h1>Interacting with the game board</h1>
+                            <h1>Java Chess Implementation</h1>
+
+                            <h2>Features</h2>
+
+                            <ul>
+                                <li>Game clock</li>
+                                <li>Standard chess moves</li>
+                                <li>Castling</li>
+                                <li>En passant</li>
+                                <li>Promotion</li>
+                                <li>Check</li>
+                                <li>Checkmate</li>
+                                <li>Stalemate</li>
+                                <li>Threefold repetition</li>
+                                <li>50-move rule</li>
+                            </ul>
+
+                            <h2>Interacting with the game board</h2>
 
                             <ul>
                                 <li>Click and drag with the mouse to move pieces</li>
@@ -23,7 +40,7 @@ public class HelpMenu extends JFrame {
                                 <li>You can change the promotion piece with <em>Game -> Set promotion piece</em></li>
                             </ul>
 
-                            <h1>Modifying the board view</h1>
+                            <h2>Modifying the board view</h2>
 
                             <ul>
                                 <li>You can flip the board view with <em>View -> Flip board</em> (or by pressing F)</li>
@@ -31,7 +48,7 @@ public class HelpMenu extends JFrame {
                                 <li>Toggle board coordinates with <em>View -> Show board coordinates</em></li>
                             </ul>
 
-                            <h1>Managing game state</h1>
+                            <h2>Managing game state</h2>
 
                             <ul>
                                 <li>You can start a new game with <em>Game -> New game</em></li>
@@ -42,7 +59,7 @@ public class HelpMenu extends JFrame {
                                 <li>Save the current game to a file with <em>Game -> Save game</em></li>
                             </ul>
 
-                            <h1>Adjusting the rules</h1>
+                            <h2>Adjusting the rules</h2>
 
 
                             <ul>

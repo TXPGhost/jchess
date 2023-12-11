@@ -265,7 +265,9 @@ public class Board {
         }
 
         // Make sure the king does not castle in check
-        if (Math.abs(move.getFrom().getFile().getIndex() - move.getTo().getFile().getIndex()) == 2) {
+        if (Math.abs(
+                move.getFrom().getFile().getIndex() - move.getTo().getFile().getIndex()
+        ) == 2) {
             if (isInCheck()) {
                 return MoveLegality.CastlingInCheck;
             }
@@ -320,7 +322,9 @@ public class Board {
      * Returns a collection of all possible moves from this position with a
      * blacklist of piece types.
      */
-    public Collection<Move> getPossibleMovesWithBlacklist(Collection<Class<? extends Piece>> blacklist) {
+    public Collection<Move> getPossibleMovesWithBlacklist(
+            final Collection<Class<? extends Piece>> blacklist
+    ) {
         final Collection<Move> possibleMoves = new ArrayList<>();
         for (int rFrom = 1; rFrom <= 8; rFrom++) {
             for (char fFrom = 'a'; fFrom <= 'h'; fFrom++) {
@@ -381,7 +385,8 @@ public class Board {
                 final Square attacker = new Square(new Rank(r), new File(f));
                 if (getPieceColor(attacker) == turn.opposite()) {
                     if (flipped.getLegalityIgnoreCheck(
-                            new Move(this, attacker, king, null)) == MoveLegality.Legal) {
+                            new Move(this, attacker, king, null)
+                    ) == MoveLegality.Legal) {
                         return true;
                     }
                 }
@@ -452,7 +457,7 @@ public class Board {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == null) {
             return false;
         } else if (this == o) {
@@ -462,9 +467,9 @@ public class Board {
         } else {
             for (int r = 1; r <= 8; r++) {
                 for (char f = 'a'; f <= 'h'; f++) {
-                    Square s = new Square(new Rank(r), new File(f));
-                    Piece a = getPiece(s);
-                    Piece b = ((Board) o).getPiece(s);
+                    final Square s = new Square(new Rank(r), new File(f));
+                    final Piece a = getPiece(s);
+                    final Piece b = ((Board) o).getPiece(s);
                     if (a == null && b == null) {
                         continue;
                     } else if ((a == null && b != null) || (a != null && b == null)) {

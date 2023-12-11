@@ -15,8 +15,8 @@
 - [x] New game, settings, etc.
 - [x] Checkmate
 - [x] Stalemate
-- [ ] 3 move repetition
-- [ ] 50 move rule
+- [x] 3 move repetition
+- [x] 50 move rule
 
 # File IO
 
@@ -52,7 +52,7 @@
 - [x] King
   - [x] Basic movement
   - [x] Cannot same side capture
-  - [ ] Blocked by other pieces
+  - [x] Blocked by other pieces
   - [x] Cannot move into check
   - [x] Must get out of check
   - [x] Castling

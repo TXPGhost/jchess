@@ -1,7 +1,6 @@
 package org.cis1200.chess;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.cis1200.chess.piece.Pawn;
@@ -22,7 +21,8 @@ public class ChessGame {
 
     public ChessGame(
             final long whiteTime, final long whiteIncrement, final long blackTime,
-            final long blackIncrement) {
+            final long blackIncrement
+    ) {
         final Board first = new Board();
 
         boards = new ArrayList<>();

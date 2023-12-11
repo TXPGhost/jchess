@@ -1,6 +1,6 @@
 =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=
 CIS 1200 Game Project README
-PennKey: _______
+PennKey: xanrob_
 =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=
 
 ===================
@@ -24,7 +24,7 @@ PennKey: _______
 ===============================
 - Include a screenshot of your project's file structure. This should include
   all of the files in your project, and the folders they are in. You can
-  upload this screenshot in your homework submission to gradescope, named 
+  upload this screenshot in your homework submission to gradescope, named
   "file_structure.png".
 
 =========================
@@ -48,5 +48,5 @@ PennKey: _______
 =: External Resources :=
 ========================
 
-- Cite any external resources (images, tutorials, etc.) that you may have used 
+- Cite any external resources (images, tutorials, etc.) that you may have used
   while implementing your game.
