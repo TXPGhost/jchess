@@ -9,7 +9,6 @@ org/cis1200/chess/piece/PieceColor.class
 org/cis1200/chess/ui/RunChess$5.class
 org/cis1200/chess/ui/RunChess$2.class
 org/cis1200/chess/DeserializeMoveException.class
-org/cis1200/chess/MoveContext.class
 org/cis1200/chess/ui/ClockSettings.class
 org/cis1200/chess/ui/BoardView$3.class
 org/cis1200/chess/Move.class

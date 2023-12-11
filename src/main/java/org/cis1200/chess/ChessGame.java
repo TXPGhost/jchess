@@ -80,6 +80,7 @@ public class ChessGame {
     public boolean playMove(final Move move) {
         final Board current = getCurrentBoard();
         final MoveLegality legality = current.getLegality(move);
+        System.out.println(move + " : " + legality);
         if (legality.isLegal()) {
             if (boards.size() != 1 && getResult() == Result.Undecided
                     && getCurrentBoard().getTurn() == PieceColor.White) {
@@ -104,6 +105,7 @@ public class ChessGame {
     public boolean playMoveAtIndex(final Move move, final int index) {
         final Board current = getBoard(index);
         final MoveLegality legality = current.getLegality(move);
+        System.out.println(move + " : " + legality);
         if (legality.isLegal()) {
             if (boards.size() != 1 && getResult() == Result.Undecided
                     && getCurrentBoard().getTurn() == PieceColor.White) {

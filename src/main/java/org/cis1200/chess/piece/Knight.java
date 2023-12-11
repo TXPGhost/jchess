@@ -12,7 +12,6 @@ public class Knight extends Piece {
 
     @Override
     public MoveLegality getLegality(final Move move) {
-        final Board board = move.getBoard();
         final Square from = move.getFrom();
         final Square to = move.getTo();
 

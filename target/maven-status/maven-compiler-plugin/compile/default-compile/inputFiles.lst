@@ -13,7 +13,6 @@
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/Rank.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/CastlingRestrictions.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/Square.java
-/home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/MoveContext.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/ui/ClockSettings.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/chess/piece/King.java
 /home/alexander/Coding/cis1200/hw09/src/main/java/org/cis1200/Game.java

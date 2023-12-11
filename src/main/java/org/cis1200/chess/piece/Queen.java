@@ -47,7 +47,6 @@ public class Queen extends Piece {
                     }
                 }
                 return MoveLegality.Legal;
-
             } else if (rankDiff == 0 && fileDiff < 0) {
                 Square s = from;
                 while (!s.equals(to.offsetBy(0, 1))) {
@@ -84,7 +83,6 @@ public class Queen extends Piece {
                     }
                 }
                 return MoveLegality.Legal;
-
             } else if (rankDiff < 0 && fileDiff < 0) {
                 Square s = from;
                 while (!s.equals(to.offsetBy(1, 1))) {

@@ -48,7 +48,7 @@ public class King extends Piece {
                         && restrictions.canWhiteCastleKingSide()) {
                     if (board.getPiece(new Square("f1")) == null
                             && board.getPiece(new Square("g1")) == null) {
-                        if (isSquareAttacked(new Board(move.getBoard()), new Square("f1"))) {
+                        if (isSquareAttacked(new Board(move.getBoard(), move), new Square("f1"))) {
                             return MoveLegality.CastlingThroughAttackedSquare;
                         }
                         return MoveLegality.LegalCastleKingSide;
@@ -58,7 +58,7 @@ public class King extends Piece {
                         && restrictions.canBlackCastleKingSide()) {
                     if (board.getPiece(new Square("f8")) == null
                             && board.getPiece(new Square("g8")) == null) {
-                        if (isSquareAttacked(new Board(move.getBoard()), new Square("f8"))) {
+                        if (isSquareAttacked(new Board(move.getBoard(), move), new Square("f8"))) {
                             return MoveLegality.CastlingThroughAttackedSquare;
                         }
                         return MoveLegality.LegalCastleKingSide;
@@ -71,7 +71,7 @@ public class King extends Piece {
                     if (board.getPiece(new Square("b1")) == null
                             && board.getPiece(new Square("c1")) == null
                             && board.getPiece(new Square("d1")) == null) {
-                        if (isSquareAttacked(new Board(move.getBoard()), new Square("d1"))) {
+                        if (isSquareAttacked(new Board(move.getBoard(), move), new Square("d1"))) {
                             return MoveLegality.CastlingThroughAttackedSquare;
                         }
                         return MoveLegality.LegalCastleKingSide;
@@ -82,7 +82,7 @@ public class King extends Piece {
                     if (board.getPiece(new Square("b8")) == null
                             && board.getPiece(new Square("c8")) == null
                             && board.getPiece(new Square("d8")) == null) {
-                        if (isSquareAttacked(new Board(move.getBoard()), new Square("d8"))) {
+                        if (isSquareAttacked(new Board(move.getBoard(), move), new Square("d8"))) {
                             return MoveLegality.CastlingThroughAttackedSquare;
                         }
                         return MoveLegality.LegalCastleKingSide;
