@@ -51,12 +51,10 @@ public class RunChess implements Runnable {
         final BoardView boardView = new BoardView(
                 pieceImages, promotionMenu, clockSettings.getWhiteTime(),
                 clockSettings.getWhiteIncrement(),
-                clockSettings.getBlackTime(), clockSettings.getBlackIncrement()
-        );
+                clockSettings.getBlackTime(), clockSettings.getBlackIncrement());
 
         sidePanel.updateMoveIndicator(
-                boardView.getGame().getResult(), boardView.getCurrentBoard().getTurn()
-        );
+                boardView.getGame().getResult(), boardView.getCurrentBoard().getTurn());
 
         // Add action listeners
         {
@@ -65,8 +63,7 @@ public class RunChess implements Runnable {
                 public void actionPerformed(final ActionEvent e) {
                     boardView.reset(
                             clockSettings.getWhiteTime(), clockSettings.getWhiteIncrement(),
-                            clockSettings.getBlackTime(), clockSettings.getBlackIncrement()
-                    );
+                            clockSettings.getBlackTime(), clockSettings.getBlackIncrement());
                 }
             });
             menuBar.setPromotionPiece.addActionListener(new ActionListener() {
@@ -101,26 +98,22 @@ public class RunChess implements Runnable {
                         }
                         try {
                             final String serialized = new String(
-                                    Files.readAllBytes(Paths.get(file.getPath()))
-                            );
+                                    Files.readAllBytes(Paths.get(file.getPath())));
                             boardView.setGame(ChessGame.deserialize(serialized));
                         } catch (final IOException e) {
                             JOptionPane.showMessageDialog(
                                     frame, "Unable to read game file. (" + e + ")", "Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
+                                    JOptionPane.ERROR_MESSAGE);
                             e.printStackTrace();
                         } catch (final InvalidPathException e) {
                             JOptionPane.showMessageDialog(
                                     frame, "Invalid file path. (" + e + ")", "Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
+                                    JOptionPane.ERROR_MESSAGE);
                             e.printStackTrace();
                         } catch (final DeserializeMoveException e) {
                             JOptionPane.showMessageDialog(
                                     frame, "Unable to parse game file. (" + e + ")", "Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
+                                    JOptionPane.ERROR_MESSAGE);
                             e.printStackTrace();
                         }
                     }
@@ -142,8 +135,7 @@ public class RunChess implements Runnable {
                         if (file.exists()) {
                             int answer = JOptionPane.showConfirmDialog(
                                     frame,
-                                    "File already exists, would you like to overwrite it?"
-                            );
+                                    "File already exists, would you like to overwrite it?");
                             if (answer != JOptionPane.YES_OPTION) {
                                 return;
                             }
@@ -250,8 +242,7 @@ public class RunChess implements Runnable {
             @Override
             public void componentResized(final ComponentEvent e) {
                 boardView.setPreferredSize(
-                        new Dimension(boardView.getHeight(), boardView.getHeight())
-                );
+                        new Dimension(boardView.getHeight(), boardView.getHeight()));
             }
         });
 

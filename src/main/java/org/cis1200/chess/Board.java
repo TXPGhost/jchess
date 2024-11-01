@@ -266,8 +266,7 @@ public class Board {
 
         // Make sure the king does not castle in check
         if (Math.abs(
-                move.getFrom().getFile().getIndex() - move.getTo().getFile().getIndex()
-        ) == 2) {
+                move.getFrom().getFile().getIndex() - move.getTo().getFile().getIndex()) == 2) {
             if (isInCheck()) {
                 return MoveLegality.CastlingInCheck;
             }
@@ -323,8 +322,7 @@ public class Board {
      * blacklist of piece types.
      */
     public Collection<Move> getPossibleMovesWithBlacklist(
-            final Collection<Class<? extends Piece>> blacklist
-    ) {
+            final Collection<Class<? extends Piece>> blacklist) {
         final Collection<Move> possibleMoves = new ArrayList<>();
         for (int rFrom = 1; rFrom <= 8; rFrom++) {
             for (char fFrom = 'a'; fFrom <= 'h'; fFrom++) {
@@ -385,8 +383,7 @@ public class Board {
                 final Square attacker = new Square(new Rank(r), new File(f));
                 if (getPieceColor(attacker) == turn.opposite()) {
                     if (flipped.getLegalityIgnoreCheck(
-                            new Move(this, attacker, king, null)
-                    ) == MoveLegality.Legal) {
+                            new Move(this, attacker, king, null)) == MoveLegality.Legal) {
                         return true;
                     }
                 }
